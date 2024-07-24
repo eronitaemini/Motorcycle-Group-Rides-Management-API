@@ -5,58 +5,45 @@ using Motorcycle_Group_Rides_Management_API.Models;
 
 namespace Motorcycle_Group_Rides_Management_API.Repository
 {
-    public class MotorcycleRepository : IMotorcycleRepository
-    {
-        private GroupRidesContext _motorcycleContext;
-
+	public class MotorcycleRepository:IMotorcycleRepository
+	{
+        private GroupRidesContext _context;
         public MotorcycleRepository(GroupRidesContext motorcycleContext)
-        {
-            _motorcycleContext = motorcycleContext;
+		{
+            _context = motorcycleContext;
         }
 
         public void Create(Motorcycle motorcycle)
         {
-            _motorcycleContext.Motorcycles.Add(motorcycle);
-
+            _context.Motorcycles.Add(motorcycle);
         }
 
         public void Delete(int id)
         {
-            var selectedMotorcycle = _motorcycleContext.Motorcycles.Find(id);
-            _motorcycleContext.Motorcycles.Remove(selectedMotorcycle);
+            var selectedMotorcycle = _context.Motorcycles.Find(id);
+            _context.Motorcycles.Remove(selectedMotorcycle);
         }
 
         public List<Motorcycle> GetAll()
         {
-            return _motorcycleContext.Motorcycles.ToList();
-
+            return _context.Motorcycles.ToList();
         }
 
         public Motorcycle GetById(int id)
         {
-            return _motorcycleContext.Motorcycles.Find(id);
+            return _context.Motorcycles.Find(id);
         }
 
         public bool SaveChanges()
         {
-            _motorcycleContext.SaveChanges();
+            _context.SaveChanges();
             return true;
         }
 
         public void Update(Motorcycle motorcycle)
         {
-            throw new NotImplementedException();
+            _context.Motorcycles.Update(motorcycle);
         }
-
-
-        //public void Update(Motorcycle motorcycle)
-        //{
-
-        //    //var existingmotorcycle=Get
-        //    _motorcycleContext.Motorcycles.Update(motorcycle);
-
-        //}
-    
     }
 }
 

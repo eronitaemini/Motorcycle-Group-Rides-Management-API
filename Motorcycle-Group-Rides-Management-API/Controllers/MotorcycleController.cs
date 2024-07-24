@@ -1,14 +1,9 @@
-﻿using System;
-using System.Net;
+﻿
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Motorcycle_Group_Rides_Management_API.Data;
-using Motorcycle_Group_Rides_Management_API.Dtos;
 using Motorcycle_Group_Rides_Management_API.Interfaces;
 using Motorcycle_Group_Rides_Management_API.Models;
 using static Motorcycle_Group_Rides_Management_API.Dtos.MotorcycleDtos;
-
-//potential proper error handling
 
 namespace Motorcycle_Group_Rides_Management_API.Controllers
 {
@@ -17,22 +12,22 @@ namespace Motorcycle_Group_Rides_Management_API.Controllers
 	public class MotorcycleController:ControllerBase
 	{
 		private IMapper _mapper;
-		private IMotorcycleRepository _motorcycleRepository;
+		private IMotorcycleRepository _repo;
 
 		public MotorcycleController(IMapper mapper, IMotorcycleRepository repo)
 		{
 			_mapper = mapper;
-            _motorcycleRepository = repo;
+            _repo = repo;
 		}
 
 		[HttpGet]
-		public ActionResult<List<MotorcycleDto>> GetAllMotorcycles()
+		public ActionResult<List<ViewMotorcycleDto>> GetAllMotorcycles()
 		{
 
 			try
 			{
-				var motorcycles = _motorcycleRepository.GetAll();
-				var motorcyclesDto = _mapper.Map<List<MotorcycleDto>>(motorcycles);
+				var motorcycles = _repo.GetAll();
+				var motorcyclesDto = _mapper.Map<List<ViewMotorcycleDto>>(motorcycles);
 				return Ok(motorcyclesDto);
 			}
 			catch(Exception e)
@@ -43,17 +38,17 @@ namespace Motorcycle_Group_Rides_Management_API.Controllers
 		}
 
 		[HttpGet("{id}")]
-		public ActionResult<MotorcycleDto> GetMotorcycleById(int id)
+		public ActionResult<ViewMotorcycleDto> GetMotorcycleById(int id)
 		{
-			var motorcycle = _motorcycleRepository.GetById(id);
+			var motorcycle = _repo.GetById(id);
 
 			if (motorcycle != null)
 			{
-				var motorcycleDto = _mapper.Map<MotorcycleDto>(motorcycle);
+				var motorcycleDto = _mapper.Map<ViewMotorcycleDto>(motorcycle);
 				return Ok(motorcycleDto);
 			}
 		
-            return BadRequest();
+            return BadRequest("Motorcycle not found");
 		}
 
 
@@ -61,43 +56,57 @@ namespace Motorcycle_Group_Rides_Management_API.Controllers
 		public ActionResult CreateMotorcycle([FromBody] CreateMotorcycleDto createMotorcyleDto)
 		{
 			var motorcycle = _mapper.Map<Motorcycle>(createMotorcyleDto);
-			 _motorcycleRepository.Create(motorcycle);
-			_motorcycleRepository.SaveChanges();
+            _repo.Create(motorcycle);
+            _repo.SaveChanges();
 			return new CreatedResult("location", motorcycle.Brand);
 		}
 
 		[HttpDelete]
 		public ActionResult DeleteMotorcycle(int motorcycleId)
 		{
-			var motorcycleToDelete = _motorcycleRepository.GetById(motorcycleId);
+			var motorcycleToDelete = _repo.GetById(motorcycleId);
 
 			if (motorcycleToDelete != null)
 			{
-				_motorcycleRepository.Delete(motorcycleId);
-				_motorcycleRepository.SaveChanges();
+                _repo.Delete(motorcycleId);
+                _repo.SaveChanges();
 				return NoContent();
 			}
 			return BadRequest();
+
 		}
 
-		//[HttpPut("{id}")]
-		//public ActionResult UpdateMotorcycle(int id, [FromBody] UpdateMotorcycleDto updateMotorcycleDto)
-		//{
-		//	var exisitingMotorcycle = _motorcycleRepository.GetById(id);
-		//	if (exisitingMotorcycle != null)
-		//	{
-		//		_mapper.Map(updateMotorcycleDto, exisitingMotorcycle);
-		//		exisitingMotorcycle.Brand = updateMotorcycleDto.Brand;
-		//		exisitingMotorcycle.EngineSize = updateMotorcycleDto.EngineSize;
-		//		exisitingMotorcycle.OwnerID = updateMotorcycleDto.OwnerID;
-		//		exisitingMotorcycle.Model = updateMotorcycleDto.Model;
 
-		//		return Ok(exisitingMotorcycle);
-		//	}
+		[HttpPut("{id}")]
+		public ActionResult UpdateMotorcycle(int id, [FromBody] UpdateMotorcycleDto updateMotorcycleDto)
+		{
+			if (id != updateMotorcycleDto.MotorcycleID)
+			{
+				return BadRequest("ID mismatch");
+			}
 
-		//	return BadRequest();
-		//}
+			var existingMotorcycle = _repo.GetById(id);
+			if (existingMotorcycle == null)
+			{
+				return NotFound("Motorcycle not found");
+			}
 
-	}
+			try
+			{
+				_mapper.Map(updateMotorcycleDto, existingMotorcycle);
+
+                _repo.Update(existingMotorcycle);
+                _repo.SaveChanges();
+				return NoContent();
+
+			}catch(Exception e)
+			{
+				Console.WriteLine(e.Message);
+				return StatusCode(500, "Internal Server Error");
+			}
+		}
+
+
+    }
 }
 

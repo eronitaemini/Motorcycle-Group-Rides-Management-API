@@ -11,6 +11,6 @@ namespace Motorcycle_Group_Rides_Management_API.Interfaces
 		public void Delete(int id);
 		public void Update(Motorcycle motorcycle);
 		public bool SaveChanges();
-	}
+    }
 }
 

@@ -7,6 +7,7 @@ namespace Motorcycle_Group_Rides_Management_API.Repository
 {
 	public class GroupRepository:IGroupRepository
 	{
+
         private GroupRidesContext _context;
 		public GroupRepository(GroupRidesContext context)
 		{
@@ -15,12 +16,13 @@ namespace Motorcycle_Group_Rides_Management_API.Repository
 
         public void Create(Group group)
         {
-            throw new NotImplementedException();
+            _context.Groups.Add(group);
         }
 
         public void Delete(Guid id)
         {
-            throw new NotImplementedException();
+            var group = _context.Groups.Find(id);
+            _context.Groups.Remove(group);
         }
 
         public List<Group> GetAll()
@@ -30,17 +32,19 @@ namespace Motorcycle_Group_Rides_Management_API.Repository
 
         public Group GetById(Guid id)
         {
-            throw new NotImplementedException();
+            return _context.Groups.Find(id);
+            
         }
 
         public bool SaveChanges()
         {
-            throw new NotImplementedException();
+            _context.SaveChanges();
+            return true;
         }
 
         public void Update(Group group)
         {
-            throw new NotImplementedException();
+            _context.Groups.Update(group);
         }
     }
 }

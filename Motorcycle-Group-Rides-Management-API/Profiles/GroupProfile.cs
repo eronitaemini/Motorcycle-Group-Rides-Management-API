@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 using AutoMapper;
-using static Motorcycle_Group_Rides_Management_API.GroupDtos;
+using Motorcycle_Group_Rides_Management_API.Models;
+using static Motorcycle_Group_Rides_Management_API.Dtos.GroupDto;
 
 namespace Motorcycle_Group_Rides_Management_API.Profiles
 {
@@ -10,7 +10,8 @@ namespace Motorcycle_Group_Rides_Management_API.Profiles
 		public GroupProfile()
 		{
 			CreateMap<Group, ViewGroupDto>();
-			CreateMap<ViewGroupDto, Group>();
+			CreateMap<CreateGroupDto, Group>();
+			CreateMap<UpdateGroupDto, Group>();
 		}
 	}
 }

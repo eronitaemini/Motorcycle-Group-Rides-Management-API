@@ -9,8 +9,7 @@ namespace Motorcycle_Group_Rides_Management_API.Profiles
 	{
 		public MotorcycleProfile()
 		{
-			CreateMap<Motorcycle, MotorcycleDto>();
-			CreateMap<MotorcycleDto, Motorcycle>();
+			CreateMap<Motorcycle, ViewMotorcycleDto>();
 			CreateMap<CreateMotorcycleDto, Motorcycle>();
 			CreateMap<UpdateMotorcycleDto, Motorcycle>();
 		}
