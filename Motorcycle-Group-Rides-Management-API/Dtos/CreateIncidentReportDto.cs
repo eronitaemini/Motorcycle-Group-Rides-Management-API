@@ -26,5 +26,6 @@ namespace Motorcycle_Group_Rides_Management_API.Dtos
 
         [Required]
         public int Severity { get; set; }
+        public string Status { get; set; }
     }
 }

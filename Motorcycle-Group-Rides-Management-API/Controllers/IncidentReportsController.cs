@@ -25,6 +25,7 @@ namespace Motorcycle_Group_Rides_Management_API.Controllers
         {
             var incidentReport = _mapper.Map<IncidentReport>(createDto);
             incidentReport.Id = Guid.NewGuid();
+            incidentReport.Status = "pending";
             await _repository.CreateAsync(incidentReport);
             await _repository.SaveChangesAsync();
             return Ok("Incident report submitted successfully.");
