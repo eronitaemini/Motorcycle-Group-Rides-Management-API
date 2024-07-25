@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Motorcycle_Group_Rides_Management_API.Data;
+using Motorcycle_Group_Rides_Management_API.Interfaces;
+using Motorcycle_Group_Rides_Management_API.Repository;
+using Motorcycle_Group_Rides_Management_API.IncidentReportProfile;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +51,16 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     };
 });
+
+
+
+builder.Services.AddScoped<IIncidentReportRepository, IncidentReportRepository>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddAutoMapper(typeof(IncidentReportProfile));
+
+
+
 
 var app = builder.Build();
 

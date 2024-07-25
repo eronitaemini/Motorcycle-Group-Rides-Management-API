@@ -8,6 +8,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using Motorcycle_Group_Rides_Management_API.Dtos;
 
 namespace Motorcycle_Group_Rides_Management_API.Controllers
 {
@@ -84,7 +85,7 @@ namespace Motorcycle_Group_Rides_Management_API.Controllers
 
 
         [HttpGet]
-        [Route("GetUsersById/{id}")]
+        [Route("GetUsersById")]
         public async Task<IActionResult> GetUserById(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -105,7 +106,7 @@ namespace Motorcycle_Group_Rides_Management_API.Controllers
 
 
         [HttpGet]
-        [Route("GetUsersByName{username}")]
+        [Route("GetUsersByName")]
         public async Task<IActionResult> GetUserByName(string username)
         {
             var users = await _userManager.Users.Where(u => u.UserName.Contains(username)).ToListAsync();
@@ -126,8 +127,48 @@ namespace Motorcycle_Group_Rides_Management_API.Controllers
 
 
 
+        [HttpDelete]
+        [Route("DeleteUser")]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            return Ok("User deleted successfully");
+        }
 
 
+
+        [HttpPut]
+        [Route("EditUser")]
+        public async Task<IActionResult> UpdateUser(string id, [FromBody] UpdateUserDto updateUserDto)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            user.UserName = updateUserDto.Username;
+            user.Email = updateUserDto.Email;
+
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            return Ok("User updated successfully");
+        }
 
 
 
