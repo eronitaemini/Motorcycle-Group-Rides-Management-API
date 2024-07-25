@@ -1,11 +1,13 @@
 ﻿using System;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Motorcycle_Group_Rides_Management_API.Models;
 
 namespace Motorcycle_Group_Rides_Management_API.Data
 {
-	public class GroupRidesContext:DbContext
-	{
+	public class GroupRidesContext: IdentityDbContext<IdentityUser>
+    {
 		public GroupRidesContext(DbContextOptions<GroupRidesContext> options):base(options)
 		{
 		}
