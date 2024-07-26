@@ -11,8 +11,9 @@ using Motorcycle_Group_Rides_Management_API.Helpers;
 	{
 		[Key]
 		public int MotorcycleID { get; set; }
-
+		[Required]
 		public string  Brand { get; set; }
+		[Required]
         public string Model { get; set; }
         public int ProductionYear { get; set; }
 		[Required]

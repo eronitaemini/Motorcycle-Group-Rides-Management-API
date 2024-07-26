@@ -11,7 +11,11 @@ using System.Text;
 using Motorcycle_Group_Rides_Management_API.Data;
 using Motorcycle_Group_Rides_Management_API.Interfaces;
 using Motorcycle_Group_Rides_Management_API.Repository;
+
 using Motorcycle_Group_Rides_Management_API.IncidentReportProfile;
+
+using MySqlConnector;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,10 +26,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Configure DbContext to use MySQL
-var connectionString = builder.Configuration.GetConnectionString("Default");
-builder.Services.AddDbContext<GroupRidesContext>(options =>
-    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 32)))); // Use your MySQL version
+
 
 // Configure Identity
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
@@ -60,6 +61,16 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddAutoMapper(typeof(IncidentReportProfile));
 
 
+
+builder.Services.AddTransient<IMotorcycleRepository, MotorcycleRepository>();
+builder.Services.AddTransient<IGroupRepository, GroupRepository>();
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+
+var connectionString = builder.Configuration.GetConnectionString("Default");
+builder.Services.AddDbContext<GroupRidesContext>(options=>
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 
 var app = builder.Build();

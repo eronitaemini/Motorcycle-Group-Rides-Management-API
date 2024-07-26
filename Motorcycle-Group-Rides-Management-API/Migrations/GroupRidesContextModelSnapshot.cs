@@ -32,6 +32,7 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
                     b.HasIndex("ParticipantsId");
 
                     b.ToTable("GroupRideUser");
+
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -224,6 +225,7 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+
                 });
 
             modelBuilder.Entity("Motorcycle_Group_Rides_Management_API.Models.Group", b =>
@@ -280,6 +282,7 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
                     b.HasIndex("RouteID");
 
                     b.ToTable("GroupRides");
+
                 });
 
             modelBuilder.Entity("Motorcycle_Group_Rides_Management_API.Models.IncidentReport", b =>
@@ -321,6 +324,7 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("IncidentReports");
+
                 });
 
             modelBuilder.Entity("Motorcycle_Group_Rides_Management_API.Models.Motorcycle", b =>
