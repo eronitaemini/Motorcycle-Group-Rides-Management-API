@@ -32,12 +32,14 @@ namespace Motorcycle_Group_Rides_Management_API.Controllers
         }
 
         [HttpGet("GetAllIncidentReports")]
-        public async Task<IActionResult> GetAllIncidentReports()
+        public async Task<IActionResult> GetAllIncidentReports(int pageNumber = 1, int pageSize = 10, int? severity = null, string location = null)
         {
-            var incidentReports = await _repository.GetAllAsync();
-            var incidentReportsDto = _mapper.Map<List<CreateIncidentReportDto>>(incidentReports);
+            var incidentReports = await _repository.GetAllAsync(pageNumber, pageSize, severity, location);
+            var incidentReportsDto = _mapper.Map<List<IncidentReportDto>>(incidentReports);
             return Ok(incidentReportsDto);
         }
+
+
 
         [HttpGet("GetIncidentReportById")]
         public async Task<IActionResult> GetIncidentReportById(Guid id)

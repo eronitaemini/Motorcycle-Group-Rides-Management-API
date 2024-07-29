@@ -27,6 +27,7 @@
     </PackageReference>
     <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.1" />
+    <PackageReference Include="UmbracoCms.Core" Version="8.18.14" />
   </ItemGroup>
 
   <ItemGroup>

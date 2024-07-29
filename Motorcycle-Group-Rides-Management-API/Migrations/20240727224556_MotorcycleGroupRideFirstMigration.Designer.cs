@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Motorcycle_Group_Rides_Management_API.Data;
 
@@ -10,9 +11,11 @@ using Motorcycle_Group_Rides_Management_API.Data;
 namespace MotorcycleGroupRidesManagementAPI.Migrations
 {
     [DbContext(typeof(GroupRidesContext))]
-    partial class GroupRidesContextModelSnapshot : ModelSnapshot
+    [Migration("20240727224556_MotorcycleGroupRideFirstMigration")]
+    partial class MotorcycleGroupRideFirstMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -248,16 +251,25 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<Guid?>("GroupID")
+                        .HasColumnType("char(36)");
+
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("RouteID")
+                        .HasColumnType("int");
 
                     b.Property<string>("StartPoint")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GroupID");
+
+                    b.HasIndex("RouteID");
 
                     b.ToTable("GroupRides");
                 });
@@ -332,6 +344,44 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
                     b.ToTable("Motorcycles");
                 });
 
+            modelBuilder.Entity("Motorcycle_Group_Rides_Management_API.Models.Route", b =>
+                {
+                    b.Property<int>("RouteID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Distance")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("EndPoint")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("EstimatedTime")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("GoogleMapsRouteData")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("SafetyTips")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("StartPoint")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("RouteID");
+
+                    b.ToTable("Routes");
+                });
+
             modelBuilder.Entity("Motorcycle_Group_Rides_Management_API.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -382,7 +432,7 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
 
                     b.HasIndex("GroupRideId");
 
-                    b.ToTable("UserGroupRides");
+                    b.ToTable("UserGroupRide");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -436,6 +486,17 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Motorcycle_Group_Rides_Management_API.Models.GroupRide", b =>
+                {
+                    b.HasOne("Motorcycle_Group_Rides_Management_API.Models.Group", null)
+                        .WithMany("GroupRides")
+                        .HasForeignKey("GroupID");
+
+                    b.HasOne("Motorcycle_Group_Rides_Management_API.Models.Route", null)
+                        .WithMany("Rides")
+                        .HasForeignKey("RouteID");
+                });
+
             modelBuilder.Entity("Motorcycle_Group_Rides_Management_API.Models.Motorcycle", b =>
                 {
                     b.HasOne("Motorcycle_Group_Rides_Management_API.Models.User", "Owner")
@@ -456,7 +517,7 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
                         .IsRequired();
 
                     b.HasOne("Motorcycle_Group_Rides_Management_API.Models.User", "User")
-                        .WithMany("UserGroupRide")
+                        .WithMany("UserGroupRides")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -466,16 +527,26 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Motorcycle_Group_Rides_Management_API.Models.Group", b =>
+                {
+                    b.Navigation("GroupRides");
+                });
+
             modelBuilder.Entity("Motorcycle_Group_Rides_Management_API.Models.GroupRide", b =>
                 {
                     b.Navigation("UserGroupRides");
+                });
+
+            modelBuilder.Entity("Motorcycle_Group_Rides_Management_API.Models.Route", b =>
+                {
+                    b.Navigation("Rides");
                 });
 
             modelBuilder.Entity("Motorcycle_Group_Rides_Management_API.Models.User", b =>
                 {
                     b.Navigation("Motorcycles");
 
-                    b.Navigation("UserGroupRide");
+                    b.Navigation("UserGroupRides");
                 });
 #pragma warning restore 612, 618
         }

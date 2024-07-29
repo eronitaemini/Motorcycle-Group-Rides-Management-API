@@ -21,7 +21,7 @@ namespace Motorcycle_Group_Rides_Management_API.Models
         public string SafetyTips { get; set; }
         public RouteType Type { get; set; }
 
-        public List<GroupRide> Rides { get; set; }
+       // public List<GroupRide> Rides { get; set; }
     }
 }
 

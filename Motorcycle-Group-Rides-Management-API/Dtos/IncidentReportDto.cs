@@ -6,9 +6,6 @@ namespace Motorcycle_Group_Rides_Management_API.Dtos
     {
         public Guid Id { get; set; }
 
-      
-        public string RideId { get; set; }
-
      
         public string UserId { get; set; }
 

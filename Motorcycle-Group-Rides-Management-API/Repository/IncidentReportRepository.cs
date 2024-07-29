@@ -14,10 +14,26 @@ namespace Motorcycle_Group_Rides_Management_API.Repository
             _context = context;
         }
 
-        public async Task<List<IncidentReport>> GetAllAsync()
+        public async Task<List<IncidentReport>> GetAllAsync(int pageNumber, int pageSize, int? severity = null, string location = null)
         {
-            return await _context.IncidentReports.ToListAsync();
+            var query = _context.IncidentReports.AsQueryable();
+
+            if (severity.HasValue)
+            {
+                query = query.Where(ir => ir.Severity == severity.Value);
+            }
+
+            if (!string.IsNullOrEmpty(location))
+            {
+                query = query.Where(ir => EF.Functions.Like(ir.Location, $"%{location}%"));
+            }
+
+            return await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
         }
+
 
         public async Task<IncidentReport> GetByIdAsync(Guid id)
         {
@@ -47,7 +63,7 @@ namespace Motorcycle_Group_Rides_Management_API.Repository
         {
             return (await _context.SaveChangesAsync()) > 0;
         }
-
-       
     }
+
+
 }

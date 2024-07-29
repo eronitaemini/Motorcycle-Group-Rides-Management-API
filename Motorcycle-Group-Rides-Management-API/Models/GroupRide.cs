@@ -7,25 +7,22 @@ namespace Motorcycle_Group_Rides_Management_API.Models
     public class GroupRide
     {
         [Key]
-        public Guid GroupRideId { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
-        public Guid GroupID { get; set; }
-        public Group Group { get; set; }
-
-        [Required]
-        public Guid OrganizerId { get; set; }
-        public string Title { get; set; }
-
         [MaxLength(100)]
+        public string Name { get; set; }
+
+        [Required]
         public string Description { get; set; }
 
         [Required]
-        [ForeignKey(nameof(Route))]
-        public int RouteID { get; set; }
-        public Route Route { get; set; }
-        public List<User> Participants { get; set; }
+        public string StartPoint { get; set; }
 
+        [Required]
+        public string EndPoint { get; set; }
+
+        public ICollection<UserGroupRide> UserGroupRides { get; set; } = new List<UserGroupRide>();
 
 
     }
