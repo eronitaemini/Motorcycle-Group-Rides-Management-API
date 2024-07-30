@@ -39,6 +39,13 @@ namespace Motorcycle_Group_Rides_Management_API.Controllers
             return Ok(incidentReportsDto);
         }
 
+        [HttpGet("GetAllIncidentReportsWithoutFilter")]
+        public async Task<IActionResult> GetAllIncidentReportsWithoutFilter()
+        {
+            var incidentReports = await _repository.GetAllAsync(1, int.MaxValue); // Fetch all records
+            var incidentReportsDto = _mapper.Map<List<IncidentReportDto>>(incidentReports);
+            return Ok(incidentReportsDto);
+        }
 
 
         [HttpGet("GetIncidentReportById")]

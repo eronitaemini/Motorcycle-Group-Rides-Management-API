@@ -8,6 +8,9 @@ using Motorcycle_Group_Rides_Management_API.Interfaces;
 using Motorcycle_Group_Rides_Management_API.Repository;
 using Motorcycle_Group_Rides_Management_API.IncidentReportProfile;
 using Motorcycle_Group_Rides_Management_API.Profiles;
+using Motorcycle_Group_Rides_Management_API.Services;
+using Umbraco.Core.Composing.CompositionExtensions;
+using Umbraco.Core.Services;
 
 
 
@@ -56,10 +59,15 @@ builder.Services.AddScoped<IIncidentReportRepository, IncidentReportRepository>(
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddAutoMapper(typeof(IncidentReportProfile));
-
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<IGroupRideRepository, GroupRideRepository>();
 builder.Services.AddAutoMapper(typeof(GroupRideProfile));
+
+builder.Services.AddScoped<IIncidentReportService, IncidentReportService>();
+builder.Services.AddScoped<IGroupRideService, GroupRideService>();
+builder.Services.AddScoped<Motorcycle_Group_Rides_Management_API.Services.IUserService, UserService>();
+
 
 var app = builder.Build();
 
