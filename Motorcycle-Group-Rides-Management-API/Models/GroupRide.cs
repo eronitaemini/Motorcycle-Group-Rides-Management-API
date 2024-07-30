@@ -22,8 +22,8 @@ namespace Motorcycle_Group_Rides_Management_API.Models
 
         [Required]
         [ForeignKey(nameof(Route))]
-        public int RouteID { get; set; }
-        public Route Route { get; set; }
+        public Guid RouteID { get; set; }
+        public Routes Route { get; set; }
         public List<User> Participants { get; set; }
 
 
