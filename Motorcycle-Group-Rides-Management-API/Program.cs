@@ -2,6 +2,7 @@
 using Motorcycle_Group_Rides_Management_API.Data;
 using Motorcycle_Group_Rides_Management_API.Interfaces;
 using Motorcycle_Group_Rides_Management_API.Repository;
+using Motorcycle_Group_Rides_Management_API.Services;
 using MySqlConnector;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,7 +19,9 @@ builder.Services.AddTransient<IGroupRepository, GroupRepository>();
 builder.Services.AddTransient<IRouteRepository, RoutesRepository>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
+builder.Services.AddScoped<IRouteService, RouteService>();
+builder.Services.AddScoped<IMotorcycleService, MotorcycleService>();
+builder.Services.AddScoped<IGroupService, GroupService>();
 
 var connectionString = builder.Configuration.GetConnectionString("Default");
 builder.Services.AddDbContext<GroupRidesContext>(options=>

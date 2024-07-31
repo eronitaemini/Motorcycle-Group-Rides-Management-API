@@ -14,86 +14,44 @@ namespace Motorcycle_Group_Rides_Management_API.Repository
             _context = context;
 		}
 
-        public void Create(Routes route)
+        public async Task CreateAsync(Routes route)
         {
-            _context.Routes.Add(route);
+            await _context.Routes.AddAsync(route);
         }
 
-        public void Delete(Guid id)
+        
+        public async Task DeleteAsync(Guid id)
         {
-            var selectedRoute = _context.Routes.Find(id);
-            _context.Routes.Remove(selectedRoute);
-        }
-
-        public List<Routes> GetAll()
-        {
-            return _context.Routes.ToList();
-        }
-
-        public Routes GetById(Guid routeId)
-        {
-            var selectedRoute = _context.Routes.Find(routeId);
-            return selectedRoute;
-
+            var route= await _context.Routes.FindAsync(id);
+            _context.Routes.Remove(route);
 
         }
 
-        public bool SaveChanges()
+        public async Task<List<Routes>> GetAllAsync()
         {
-            _context.SaveChanges();
-            return true;
+           return await _context.Routes.ToListAsync();
         }
 
-        public void Update(Routes route)
+        
+        public async Task<Routes> GetByIdAsync(Guid id)
+        {
+            return await _context.Routes.FindAsync(id);
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
+
+        
+        //check if this is the correct impelementation one more time
+        public async Task UpdateAsync(Routes route)
         {
             _context.Routes.Update(route);
-
+            await _context.SaveChangesAsync();
         }
 
-        //public async Task Create(Routes route)
-        //{
-        //   await _context.Routes.AddAsync(route);
-        //   await _context.SaveChangesAsync();
-        //}
-
-        //public async Task Delete(Guid id)
-        //{
-
-        //    //IDk
-        //     var selectedRoute=await _context.Routes.FindAsync(id);
-        //     _context.Remove(selectedRoute);
-        //    await _context.SaveChangesAsync();
-        //}
-
-        //public async Task<List<Routes>> GetAll()
-        //{
-        //    return await _context.Routes.ToListAsync();
-        //}
-
-        //public async Task<Routes> GetById(Guid routeId)
-        //{
-        //    return await _context.Routes.FindAsync(routeId);
-        //}
-
-        //public bool SaveChanges()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        ////public bool SaveChanges()
-        ////{
-        ////    _context.SaveChanges();
-        ////    return true;
-        ////}
-
-        //public async Task Update(Routes route)
-        //{
-        //    _context.Attach(route);
-        //    _context.Entry(route).State = EntityState.Modified;
-        //    await _context.SaveChangesAsync();
-        //}
-
-
+   
     }
 }
 

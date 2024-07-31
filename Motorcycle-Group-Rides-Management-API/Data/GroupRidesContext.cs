@@ -12,8 +12,9 @@ namespace Motorcycle_Group_Rides_Management_API.Data
 
 		public DbSet<Group> Groups { get; set; }
 		public DbSet<GroupRide> GroupRides { get; set; }
-		public DbSet<Motorcycle> Motorcycles { get; set; }
-		public DbSet<User> Users { get; set; }
+        public DbSet<Motorcycle> Motorcycles { get; set; }
+
+        public DbSet<User> Users { get; set; }
 		public DbSet<UserGroupRide> UserGroupRides { get; set; }
 		public DbSet<Routes> Routes { get; set; }
 

@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Motorcycle_Group_Rides_Management_API.Dtos;
 using Motorcycle_Group_Rides_Management_API.Interfaces;
 using Motorcycle_Group_Rides_Management_API.Models;
+using Motorcycle_Group_Rides_Management_API.Services;
 using static Motorcycle_Group_Rides_Management_API.Dtos.MotorcycleDtos;
 
 namespace Motorcycle_Group_Rides_Management_API.Controllers
@@ -11,99 +13,84 @@ namespace Motorcycle_Group_Rides_Management_API.Controllers
 	public class MotorcycleController:ControllerBase
 	{
 		private IMapper _mapper;
-		private IMotorcycleRepository _repo;
-
-		public MotorcycleController(IMapper mapper, IMotorcycleRepository repo)
+		private readonly IMotorcycleService _motorcycleService;
+		public MotorcycleController(IMapper mapper, IMotorcycleService service)
 		{
 			_mapper = mapper;
-            _repo = repo;
+            _motorcycleService = service;
 		}
 
 		[HttpGet]
-		public ActionResult<List<ViewMotorcycleDto>> GetAllMotorcycles()
+		public async Task<ActionResult> GetAllMotorcycles()
 		{
 
-			try
-			{
-				var motorcycles = _repo.GetAll();
-				var motorcyclesDto = _mapper.Map<List<ViewMotorcycleDto>>(motorcycles);
-				return Ok(motorcyclesDto);
-			}
-			catch(Exception e)
-			{
-				Console.WriteLine(e.Message);
-				return BadRequest();
-			}
-		}
+            var allMotorcycles = await _motorcycleService.GetAllAsync();
+            return Ok(allMotorcycles);
+        }
 
 		[HttpGet("{id}")]
-		public ActionResult<ViewMotorcycleDto> GetMotorcycleById(int id)
+		public async Task<ActionResult> GetMotorcycleById(int id)
 		{
-			var motorcycle = _repo.GetById(id);
+            var motorcycle = await _motorcycleService.GetByIdAsync(id);
 
-			if (motorcycle != null)
-			{
-				var motorcycleDto = _mapper.Map<ViewMotorcycleDto>(motorcycle);
-				return Ok(motorcycleDto);
-			}
-		
-            return BadRequest("Motorcycle not found");
-		}
+            if (motorcycle == null)
+            {
+                return NotFound();
+            }
+            return Ok(motorcycle);
+        }
 
 
 		[HttpPost]
-		public ActionResult CreateMotorcycle([FromBody] CreateMotorcycleDto createMotorcyleDto)
+		public async Task<ActionResult> CreateMotorcycle([FromBody] CreateMotorcycleDto createMotorcyleDto)
 		{
-			var motorcycle = _mapper.Map<Motorcycle>(createMotorcyleDto);
-            _repo.Create(motorcycle);
-            _repo.SaveChanges();
-			return new CreatedResult("location", motorcycle.Brand);
-		}
+            await _motorcycleService.CreateAsync(createMotorcyleDto);
+            return new CreatedResult("Location", createMotorcyleDto.Brand);
+        }
 
 		[HttpDelete]
-		public ActionResult DeleteMotorcycle(int motorcycleId)
+		public async Task<ActionResult> DeleteMotorcycle(int motorcycleId)
 		{
-			var motorcycleToDelete = _repo.GetById(motorcycleId);
+            try
+            {
+                await _motorcycleService.DeleteAsync(motorcycleId);
+                return NoContent();
+            }
+            catch (KeyNotFoundException keyNotFoundExeption)
+            {
+                Console.WriteLine(keyNotFoundExeption);
+                return NotFound("The motorcycle was not found and couldn't be deleted");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return StatusCode(500, "An error occurred while deleting the route");
+            }
 
-			if (motorcycleToDelete != null)
-			{
-                _repo.Delete(motorcycleId);
-                _repo.SaveChanges();
-				return NoContent();
-			}
-			return BadRequest();
-
-		}
+        }
 
 
 		[HttpPut("{id}")]
-		public ActionResult UpdateMotorcycle(int id, [FromBody] UpdateMotorcycleDto updateMotorcycleDto)
+		public async Task<ActionResult> UpdateMotorcycle(int id, [FromBody] UpdateMotorcycleDto updateMotorcycleDto)
 		{
-			if (id != updateMotorcycleDto.MotorcycleID)
-			{
-				return BadRequest("ID mismatch");
-			}
+            try
+            {
+                await _motorcycleService.UpdateAsync(id, updateMotorcycleDto);
+                return NoContent();
 
-			var existingMotorcycle = _repo.GetById(id);
-			if (existingMotorcycle == null)
-			{
-				return NotFound("Motorcycle not found");
-			}
+            }
+            catch (ArgumentException argumentException)
+            {
+                Console.WriteLine(argumentException);
+                return BadRequest("ID Mismatch");
+            }
+            catch (KeyNotFoundException keyNotFoundException)
+            {
+                Console.WriteLine(keyNotFoundException);
+                return NotFound("Motorcycle not found");
+            }
 
-			try
-			{
-				_mapper.Map(updateMotorcycleDto, existingMotorcycle);
-
-                _repo.Update(existingMotorcycle);
-                _repo.SaveChanges();
-				return NoContent();
-
-			}catch(Exception e)
-			{
-				Console.WriteLine(e.Message);
-				return StatusCode(500, "Internal Server Error");
-			}
-		}
+        }
 
 
     }

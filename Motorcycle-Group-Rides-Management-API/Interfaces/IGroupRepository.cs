@@ -5,12 +5,12 @@ namespace Motorcycle_Group_Rides_Management_API.Interfaces
 {
 	public interface IGroupRepository
 	{
-        public List<Group> GetAll();
-        public Group GetById(Guid id);
-        public void Create(Group group);
-        public void Delete(Guid id);
-        public void Update(Group group);
-        public bool SaveChanges();
+        public Task<List<Group>> GetAllAsync();
+        public Task<Group> GetByIdAsync(Guid id);
+        public Task CreateAsync(Group group);
+        public Task DeleteAsync(Guid id);
+        public Task UpdateAsync(Group group);
+        public Task SaveChangesAsync();
     }
 }
 

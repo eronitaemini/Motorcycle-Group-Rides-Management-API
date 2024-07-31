@@ -1,8 +1,10 @@
 ﻿using System;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Motorcycle_Group_Rides_Management_API.Dtos;
 using Motorcycle_Group_Rides_Management_API.Interfaces;
 using Motorcycle_Group_Rides_Management_API.Models;
+using Motorcycle_Group_Rides_Management_API.Services;
 using static Motorcycle_Group_Rides_Management_API.Dtos.GroupDto;
 
 namespace Motorcycle_Group_Rides_Management_API.Controllers
@@ -11,84 +13,81 @@ namespace Motorcycle_Group_Rides_Management_API.Controllers
 	[Route("api/[controller]")]
 	public class GroupController : ControllerBase
 	{
-		private IMapper _mapper;
-		private IGroupRepository _repo;
+		private IGroupService _groupService;
 
-		public GroupController(IMapper mapper, IGroupRepository repo)
+		public GroupController( IGroupService groupService)
 		{
-			_mapper = mapper;
-			_repo = repo;
+			_groupService = groupService;
 		}
 
 		[HttpGet]
-		public ActionResult<List<ViewGroupDto>> GetAllGroups()
+		public async Task<ActionResult> GetAllGroups()
 		{
-			try
-			{
-				var groups = _repo.GetAll();
-				var viewGroupDtoList = _mapper.Map<List<ViewGroupDto>>(groups);
+            var allGroups = await _groupService.GetAllAsync();
+            return Ok(allGroups);
 
-				return Ok(viewGroupDtoList);
-			} catch (KeyNotFoundException e)
-			{
-				Console.WriteLine(e.Message);
-				return BadRequest();
-			}
-
-		}
+        }
 
 		[HttpGet("{id}")]
-		public ActionResult<ViewGroupDto> GetGroupById(Guid id)
+		public async Task<ActionResult> GetGroupById(Guid id)
 		{
-			var group = _repo.GetById(id);
-			if (group != null)
-			{
-				var viewGroupDto = _mapper.Map<ViewGroupDto>(group);
-				return Ok(viewGroupDto);
-			}
+            var group = await _groupService.GetByIdAsync(id);
 
-			return BadRequest();
-		}
+            if (group == null)
+            {
+                return NotFound();
+            }
+            return Ok(group);
+        }
 
 		[HttpPost]
-		public ActionResult CreateGroup([FromBody] CreateGroupDto createGroupDto)
+		public async Task<ActionResult> CreateGroup([FromBody] CreateUpdateGroupDto createGroupDto)
 		{
-			var group = _mapper.Map<Group>(createGroupDto);
-			group.CreationDate = DateTime.Now;
-			_repo.Create(group);
-			_repo.SaveChanges();
-			return new CreatedResult("location", createGroupDto.Name);
-		}
+            await _groupService.CreateAsync(createGroupDto);
+            return new CreatedResult("Location", createGroupDto.Name);
+        }
 
 		[HttpPut("{id}")]
-		public ActionResult UpdateGroup(Guid id, [FromBody] UpdateGroupDto updateGroupDto)
+		public async Task<ActionResult> UpdateGroup(Guid id, [FromBody] CreateUpdateGroupDto updateGroupDto)
 		{
-			if (id != updateGroupDto.GroupID)
-			{
-				return BadRequest();
-			}
-			
-			var group = _mapper.Map<Group>(updateGroupDto);
-			_repo.Update(group);
-			_repo.SaveChanges();
+            try
+            {
+                await _groupService.UpdateAsync(id, updateGroupDto);
+                return NoContent();
 
-			return NoContent();
-		}
+            }
+            catch (ArgumentException argumentException)
+            {
+                Console.WriteLine(argumentException);
+                return BadRequest("ID Mismatch");
+            }
+            catch (KeyNotFoundException keyNotFoundException)
+            {
+                Console.WriteLine(keyNotFoundException);
+                return NotFound("Group not found");
+            }
+        }
 
 		[HttpDelete]
-		public ActionResult DeleteGroup(Guid id)
+		public async Task<ActionResult> DeleteGroup(Guid id)
 		{
-			var group = _repo.GetById(id);
+            try
+            {
+                await _groupService.DeleteAsync(id);
+                return NoContent();
+            }
+            catch (KeyNotFoundException keyNotFoundExeption)
+            {
+                Console.WriteLine(keyNotFoundExeption);
+                return NotFound("The group was not found and couldn't be deleted");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return StatusCode(500, "An error occurred while deleting the group");
+            }
 
-			if (group != null)
-			{
-				_repo.Delete(id);
-				_repo.SaveChanges();
-				return NoContent();
-			}
-			return BadRequest();
-
-		}
+        }
 		
 
 
