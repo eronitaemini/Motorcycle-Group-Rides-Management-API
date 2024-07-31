@@ -1,8 +1,8 @@
 ﻿using System;
 using AutoMapper;
-using Motorcycle_Group_Rides_Management_API.Dtos;
 using Motorcycle_Group_Rides_Management_API.Interfaces;
 using Motorcycle_Group_Rides_Management_API.Models;
+using static Motorcycle_Group_Rides_Management_API.Dtos.RoutesDto;
 
 namespace Motorcycle_Group_Rides_Management_API.Services
 {
