@@ -3,6 +3,11 @@ using Motorcycle_Group_Rides_Management_API.Data;
 using Motorcycle_Group_Rides_Management_API.Interfaces;
 using Motorcycle_Group_Rides_Management_API.Repository;
 using MySqlConnector;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Motorcycle_Group_Rides_Management_API.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +20,12 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddTransient<IMotorcycleRepository, MotorcycleRepository>();
 builder.Services.AddTransient<IGroupRepository, GroupRepository>();
+builder.Services.AddTransient<IFeedbackRepository, FeedbackRepository>();
+builder.Services.AddTransient<ICompatibilityRepository, CompatibilityRepository>();
+//builder.Services.AddTransient<ICompatibilityService, CompatibilityService>();
+
+
+
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

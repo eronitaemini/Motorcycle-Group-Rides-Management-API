@@ -16,7 +16,10 @@ namespace Motorcycle_Group_Rides_Management_API.Data
 		public DbSet<Models.Route> Routes { get; set; }
 		public DbSet<User> Users { get; set; }
 		public DbSet<UserGroupRide> UserGroupRides { get; set; }
+        public DbSet<Feedback> Feedbacks { get; set; }
+        public DbSet<Compatibility> Compatibilities { get; set; }
 
-	}
+
+    }
 }
 

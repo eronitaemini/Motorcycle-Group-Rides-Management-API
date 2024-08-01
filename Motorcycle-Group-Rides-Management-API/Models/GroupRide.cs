@@ -26,6 +26,10 @@ namespace Motorcycle_Group_Rides_Management_API.Models
         public Route Route { get; set; }
         public List<User> Participants { get; set; }
 
+        [Required]
+        public List<Feedback> Feedbacks { get; set; }
+
+        public bool Compatible { get; set; }
 
 
     }

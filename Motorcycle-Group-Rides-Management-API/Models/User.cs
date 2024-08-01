@@ -27,7 +27,7 @@ namespace Motorcycle_Group_Rides_Management_API.Models
         public List<Motorcycle> Motorcycles { get; set; }
         public List<GroupRide> GroupRides { get; set; }
         
-
+        public List <Feedback> Feedbacks { get; set; }
 
     }
 }

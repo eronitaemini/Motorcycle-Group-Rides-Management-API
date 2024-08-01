@@ -11,8 +11,8 @@ using Motorcycle_Group_Rides_Management_API.Data;
 namespace MotorcycleGroupRidesManagementAPI.Migrations
 {
     [DbContext(typeof(GroupRidesContext))]
-    [Migration("20240722212954_InitialMigrationsCreate")]
-    partial class InitialMigrationsCreate
+    [Migration("20240728223327_Feedback")]
+    partial class Feedback
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,6 +35,41 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
                     b.HasIndex("ParticipantsId");
 
                     b.ToTable("GroupRideUser");
+                });
+
+            modelBuilder.Entity("Motorcycle_Group_Rides_Management_API.Models.Feedback", b =>
+                {
+                    b.Property<Guid>("FeedbackId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Comments")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<DateTime>("DateSubmitted")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("GroupRideId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("User")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("userId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("FeedbackId");
+
+                    b.HasIndex("GroupRideId");
+
+                    b.HasIndex("User");
+
+                    b.ToTable("Feedbacks");
                 });
 
             modelBuilder.Entity("Motorcycle_Group_Rides_Management_API.Models.Group", b =>
@@ -232,6 +267,25 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Motorcycle_Group_Rides_Management_API.Models.Feedback", b =>
+                {
+                    b.HasOne("Motorcycle_Group_Rides_Management_API.Models.GroupRide", "GroupRide")
+                        .WithMany("Feedbacks")
+                        .HasForeignKey("GroupRideId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Motorcycle_Group_Rides_Management_API.Models.User", "Author")
+                        .WithMany("Feedbacks")
+                        .HasForeignKey("User")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+
+                    b.Navigation("GroupRide");
+                });
+
             modelBuilder.Entity("Motorcycle_Group_Rides_Management_API.Models.GroupRide", b =>
                 {
                     b.HasOne("Motorcycle_Group_Rides_Management_API.Models.Group", "Group")
@@ -286,6 +340,11 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
                     b.Navigation("GroupRides");
                 });
 
+            modelBuilder.Entity("Motorcycle_Group_Rides_Management_API.Models.GroupRide", b =>
+                {
+                    b.Navigation("Feedbacks");
+                });
+
             modelBuilder.Entity("Motorcycle_Group_Rides_Management_API.Models.Route", b =>
                 {
                     b.Navigation("Rides");
@@ -293,6 +352,8 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
 
             modelBuilder.Entity("Motorcycle_Group_Rides_Management_API.Models.User", b =>
                 {
+                    b.Navigation("Feedbacks");
+
                     b.Navigation("Motorcycles");
                 });
 #pragma warning restore 612, 618
