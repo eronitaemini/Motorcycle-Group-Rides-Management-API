@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,6 +8,8 @@ namespace Motorcycle_Group_Rides_Management_API.Models
     [Table("Users")]
     public class User
     {
+        internal readonly object UserGroupRides;
+
         [Key]
         public Guid Id { get; set; }
         [Required]
@@ -25,9 +28,20 @@ namespace Motorcycle_Group_Rides_Management_API.Models
         public string PhoneNumber { get; set; }
 
         public List<Motorcycle> Motorcycles { get; set; }
+//<<<<<<< HEAD
         public List<GroupRide> GroupRides { get; set; }
         
         public List <Feedback> Feedbacks { get; set; }
+//=======
+       // public List<GroupRide> GroupRide {  get; set; }
+        public ICollection<UserGroupRide> UserGroupRide { get; set; } = new List<UserGroupRide>();
+
+
+
+
+
+
+//>>>>>>> 1a3bb258d5330293170811db8d51acc71641a842
 
     }
 }
