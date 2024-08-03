@@ -33,6 +33,7 @@
     <None Remove="Profiles\" />
     <None Remove="Migrations\" />
     <None Remove="Services\" />
+    <None Remove="External\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -44,5 +45,7 @@
     <Folder Include="Profiles\" />
     <Folder Include="Migrations\" />
     <Folder Include="Services\" />
+    <Folder Include="External\" />
+
   </ItemGroup>
 </Project>
