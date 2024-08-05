@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Motorcycle_Group_Rides_Management_API.Data;
 
@@ -10,30 +11,16 @@ using Motorcycle_Group_Rides_Management_API.Data;
 namespace MotorcycleGroupRidesManagementAPI.Migrations
 {
     [DbContext(typeof(GroupRidesContext))]
-    partial class GroupRidesContextModelSnapshot : ModelSnapshot
+    [Migration("20240728133833_UpdateAddGroupRide")]
+    partial class UpdateAddGroupRide
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
-
-
-            //modelBuilder.Entity("GroupRideUser", b =>
-            //    {
-            //        b.Property<Guid>("GroupRidesGroupRideId")
-            //            .HasColumnType("char(36)");
-
-            //        b.Property<Guid>("ParticipantsId")
-            //            .HasColumnType("char(36)");
-
-            //        b.HasKey("GroupRidesGroupRideId", "ParticipantsId");
-
-            //        b.HasIndex("ParticipantsId");
-
-            //        b.ToTable("GroupRideUser");
-            //    });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -227,7 +214,6 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-
             modelBuilder.Entity("Motorcycle_Group_Rides_Management_API.Models.Group", b =>
                 {
                     b.Property<Guid>("GroupID")
@@ -253,21 +239,14 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
 
             modelBuilder.Entity("Motorcycle_Group_Rides_Management_API.Models.GroupRide", b =>
                 {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<Guid>("GroupID")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("OrganizerId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("RouteID")
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("Title")
                     b.Property<string>("EndPoint")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -281,10 +260,6 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasIndex("RouteID")
-                        .IsUnique();
-
-                    b.ToTable("GroupRides");
                     b.HasKey("Id");
 
                     b.ToTable("GroupRides");
@@ -360,39 +335,6 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
                     b.ToTable("Motorcycles");
                 });
 
-            modelBuilder.Entity("Motorcycle_Group_Rides_Management_API.Models.Routes", b =>
-                {
-                    b.Property<Guid>("RouteId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<float>("Distance")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("EndingPoint")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<TimeSpan>("EstimatedTime")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("StartingPoint")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("routeType")
-                        .HasColumnType("int");
-
-                    b.HasKey("RouteId");
-
-                    b.ToTable("Routes");
-
-                });
-
             modelBuilder.Entity("Motorcycle_Group_Rides_Management_API.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -443,26 +385,8 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
 
                     b.HasIndex("GroupRideId");
 
-                    b.ToTable("UserGroupRide");
+                    b.ToTable("UserGroupRides");
                 });
-
-            //             modelBuilder.Entity("GroupRideUser", b =>
-            //                {
-            //                    b.HasOne("Motorcycle_Group_Rides_Management_API.Models.GroupRide", null)
-            //                        .WithMany()
-            //                        .HasForeignKey("GroupRidesGroupRideId")
-            //                        .OnDelete(DeleteBehavior.Cascade)
-            //                        .IsRequired();
-
-            //                    b.HasOne("Motorcycle_Group_Rides_Management_API.Models.User", null)
-            //                        .WithMany()
-            //                        .HasForeignKey("ParticipantsId")
-            //                        .OnDelete(DeleteBehavior.Cascade)
-            //                        .IsRequired();
-            //                });
-            // =======
-            //                     b.ToTable("UserGroupRides");
-            //                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
@@ -499,9 +423,6 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Motorcycle_Group_Rides_Management_API.Models.Routes", "Route")
-                        .WithOne("groupRide")
-                        .HasForeignKey("Motorcycle_Group_Rides_Management_API.Models.GroupRide", "RouteID")
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -550,13 +471,6 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
 
             modelBuilder.Entity("Motorcycle_Group_Rides_Management_API.Models.GroupRide", b =>
                 {
-                    b.Navigation("GroupRides");
-                });
-
-            modelBuilder.Entity("Motorcycle_Group_Rides_Management_API.Models.Routes", b =>
-                {
-                    b.Navigation("groupRide")
-                        .IsRequired();
                     b.Navigation("UserGroupRides");
                 });
 
