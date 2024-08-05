@@ -12,7 +12,7 @@ namespace Motorcycle_Group_Rides_Management_API.Dtos
             public string Brand { get; set; }
             public string Model { get; set; }
             public int ProductionYear { get; set; }
-            public MotorcyleType Type { get; set; }
+            public string Type { get; set; }
         }
 
         public class CreateMotorcycleDto

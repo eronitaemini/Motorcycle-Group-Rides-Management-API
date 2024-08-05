@@ -10,8 +10,8 @@ namespace Motorcycle_Group_Rides_Management_API.Dtos
 
             public string StartingPoint { get; set; }
             public string EndingPoint { get; set; }
-            public float Distance { get; set; }
-            public TimeSpan EstimatedTime { get; set; }
+            public string Distance { get; set; }
+            public string EstimatedTime { get; set; }
             public RouteType RouteType { get; set; }
             public string Description { get; set; }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using AutoMapper;
+using Motorcycle_Group_Rides_Management_API.External;
 using Motorcycle_Group_Rides_Management_API.Interfaces;
 using Motorcycle_Group_Rides_Management_API.Models;
 using static Motorcycle_Group_Rides_Management_API.Dtos.RoutesDto;
@@ -10,16 +11,26 @@ namespace Motorcycle_Group_Rides_Management_API.Services
 	{
         private readonly IRouteRepository _repo;
         private readonly IMapper _mapper;
-		public RouteService(IRouteRepository repo, IMapper mapper)
+        private readonly IRouteInfo _routeInfo;
+		public RouteService(IRouteRepository repo, IMapper mapper, IRouteInfo routeInfo)
 		{
             _repo = repo;
             _mapper = mapper;
+            _routeInfo = routeInfo;
 		}
 
         public async Task CreateAsync(CreateRouteDto createRouteDto)
         {
             createRouteDto.RouteId = new Guid();
+            
             var route = _mapper.Map<Routes>(createRouteDto);
+            RouteInfo routeInfo = await _routeInfo.GetRouteInfoAsync(createRouteDto.StartingPoint, createRouteDto.EndingPoint);
+
+            route.Distance = routeInfo.DistanceText;
+            route.EstimatedTime = routeInfo.DurationText;
+
+
+
             await _repo.CreateAsync(route);
             await _repo.SaveChangesAsync();
         }

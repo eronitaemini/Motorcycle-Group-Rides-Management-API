@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using Motorcycle_Group_Rides_Management_API.Dtos;
+using Motorcycle_Group_Rides_Management_API.External;
 using Motorcycle_Group_Rides_Management_API.Interfaces;
 using Motorcycle_Group_Rides_Management_API.Services;
 using static Motorcycle_Group_Rides_Management_API.Dtos.RoutesDto;
@@ -12,9 +13,10 @@ namespace Motorcycle_Group_Rides_Management_API.Controllers
 	public class RoutesController : ControllerBase
 	{
 		private readonly IRouteService _routeService;
-		public RoutesController(IRouteService routeService)
+		public RoutesController(IRouteService routeService, IRouteInfo routeInfo)
 		{
 			_routeService = routeService;
+			
 		}
 
 		[HttpGet]
