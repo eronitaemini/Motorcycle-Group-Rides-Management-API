@@ -267,7 +267,7 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
                     b.Property<Guid>("RouteID")
                         .HasColumnType("char(36)");
 
-                    b.Property<string>("Title")
+                    b.Property<string>("Title");
                     b.Property<string>("EndPoint")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -501,7 +501,7 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
 
                     b.HasOne("Motorcycle_Group_Rides_Management_API.Models.Routes", "Route")
                         .WithOne("groupRide")
-                        .HasForeignKey("Motorcycle_Group_Rides_Management_API.Models.GroupRide", "RouteID")
+                        .HasForeignKey("Motorcycle_Group_Rides_Management_API.Models.GroupRide", "RouteID");
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")

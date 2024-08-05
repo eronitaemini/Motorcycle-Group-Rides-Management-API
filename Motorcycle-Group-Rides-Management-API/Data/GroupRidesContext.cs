@@ -23,8 +23,6 @@ namespace Motorcycle_Group_Rides_Management_API.Data
 
 
         public DbSet<IncidentReport> IncidentReports { get; set; }
-        public DbSet<GroupRide> GroupRides { get; set; }
-        public DbSet<UserGroupRide> UserGroupRides { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
