@@ -10,7 +10,7 @@ namespace Motorcycle_Group_Rides_Management_API.Controllers
     [ApiController]
     public class CompatibilityController : ControllerBase
     {
-      
-
+    
+    
     }
 }

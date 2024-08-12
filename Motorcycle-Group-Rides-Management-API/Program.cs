@@ -49,7 +49,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 //>>>>>>> 1a3bb258d5330293170811db8d51acc71641a842
 var connectionString = builder.Configuration.GetConnectionString("Default");
 builder.Services.AddDbContext<GroupRidesContext>(options =>
-    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 32)))); // Use your MySQL version
+    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 39)))); // Use your MySQL version
 
 //  Identity
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()

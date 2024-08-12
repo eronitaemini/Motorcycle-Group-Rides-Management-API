@@ -7,7 +7,7 @@ using Motorcycle_Group_Rides_Management_API.Models;
 namespace Motorcycle_Group_Rides_Management_API.Services
 {
    
-   public class CompatibilityService
+       public class CompatibilityService
     {
 
     }
