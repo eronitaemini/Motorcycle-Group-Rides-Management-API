@@ -92,6 +92,13 @@ namespace Motorcycle_Group_Rides_Management_API.Controllers
 
         }
 
+        [HttpGet("search")]
+        public async Task<ActionResult> GetMotorcycles(string searchQuery = "", string sortBy = "Brand", bool ascending = true, int pageNumber = 1, int pageSize = 10)
+        {
+            var motorcycles = await _motorcycleService.GetMotorcyclesAsync(searchQuery, sortBy, ascending, pageNumber, pageSize);
+            return Ok(motorcycles);
+        }
+
 
     }
 }
