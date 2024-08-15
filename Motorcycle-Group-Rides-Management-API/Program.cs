@@ -4,8 +4,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Motorcycle_Group_Rides_Management_API.Data;
+
+using Motorcycle_Group_Rides_Management_API.External;
 using Motorcycle_Group_Rides_Management_API.Interfaces;
 using Motorcycle_Group_Rides_Management_API.Repository;
+using Motorcycle_Group_Rides_Management_API.Services;
+using MySqlConnector;
 using Motorcycle_Group_Rides_Management_API.IncidentReportProfile;
 using Motorcycle_Group_Rides_Management_API.Profiles;
 using Motorcycle_Group_Rides_Management_API.Services;
@@ -23,7 +27,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//  DbContext to use MySQL
+
+builder.Services.AddTransient<IMotorcycleRepository, MotorcycleRepository>();
+builder.Services.AddTransient<IGroupRepository, GroupRepository>();
+builder.Services.AddTransient<IRouteRepository, RoutesRepository>();
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddScoped<IRouteService, RouteService>();
+builder.Services.AddScoped<IMotorcycleService, MotorcycleService>();
+builder.Services.AddScoped<IGroupService, GroupService>();
+builder.Services.AddScoped<IRouteInfo, RouteInfoService>();
+
 var connectionString = builder.Configuration.GetConnectionString("Default");
 builder.Services.AddDbContext<GroupRidesContext>(options =>
     options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 32)))); // Use your MySQL version
