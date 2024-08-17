@@ -4,15 +4,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Motorcycle_Group_Rides_Management_API.Data;
+
+using Motorcycle_Group_Rides_Management_API.External;
 using Motorcycle_Group_Rides_Management_API.Interfaces;
 using Motorcycle_Group_Rides_Management_API.Repository;
+using Motorcycle_Group_Rides_Management_API.Services;
 //<<<<<<< HEAD
 using MySqlConnector;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Motorcycle_Group_Rides_Management_API.Services;
-//=======
 using Motorcycle_Group_Rides_Management_API.IncidentReportProfile;
 using Motorcycle_Group_Rides_Management_API.Profiles;
 using Motorcycle_Group_Rides_Management_API.Services;
@@ -31,9 +29,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
 //<<<<<<< HEAD
 builder.Services.AddTransient<IMotorcycleRepository, MotorcycleRepository>();
 builder.Services.AddTransient<IGroupRepository, GroupRepository>();
+builder.Services.AddTransient<IRouteRepository, RoutesRepository>();
 builder.Services.AddTransient<IFeedbackRepository, FeedbackRepository>();
 builder.Services.AddTransient<ICompatibilityRepository, CompatibilityRepository>();
 //builder.Services.AddTransient<ICompatibilityService, CompatibilityService>();
@@ -42,11 +42,11 @@ builder.Services.AddTransient<ICompatibilityRepository, CompatibilityRepository>
 
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddScoped<IRouteService, RouteService>();
+builder.Services.AddScoped<IMotorcycleService, MotorcycleService>();
+builder.Services.AddScoped<IGroupService, GroupService>();
+builder.Services.AddScoped<IRouteInfo, RouteInfoService>();
 
-
-//=======
-//  DbContext to use MySQL
-//>>>>>>> 1a3bb258d5330293170811db8d51acc71641a842
 var connectionString = builder.Configuration.GetConnectionString("Default");
 builder.Services.AddDbContext<GroupRidesContext>(options =>
     options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 39)))); // Use your MySQL version
