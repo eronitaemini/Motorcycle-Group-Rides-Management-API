@@ -91,6 +91,18 @@ namespace Motorcycle_Group_Rides_Management_API.Services
             await _repo.UpdateAsync(motorcycle);
             await _repo.SaveChangesAsync();
         }
+
+        public async Task<List<ViewMotorcycleDto>> GetMotorcyclesByUserIdAsync(Guid userId)
+        {
+            var motorcycles = await _repo.GetMotorcyclesByUserIdAsync(userId);
+
+            if (motorcycles == null || motorcycles.Count == 0)
+            {
+                throw new KeyNotFoundException("No motorcycles found for this user.");
+            }
+
+            return _mapper.Map<List<MotorcycleDtos.ViewMotorcycleDto>>(motorcycles);
+        }
     }
 }
 

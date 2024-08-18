@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Motorcycle_Group_Rides_Management_API.Data;
 using Motorcycle_Group_Rides_Management_API.Interfaces;
 using Motorcycle_Group_Rides_Management_API.Models;
+using static Motorcycle_Group_Rides_Management_API.Dtos.MotorcycleDtos;
 
 namespace Motorcycle_Group_Rides_Management_API.Repository
 {
@@ -56,6 +57,19 @@ namespace Motorcycle_Group_Rides_Management_API.Repository
 
             // Paging
             return await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+        }
+
+        public async Task<List<Motorcycle>> GetMotorcyclesByUserIdAsync(Guid userId)
+        {
+            var user = await _context.Users.Include(u => u.Motorcycles)
+                                        .FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null)
+            {
+                throw new KeyNotFoundException("User not found");
+            }
+
+            return (user.Motorcycles).ToList();
         }
 
         public async Task SaveChangesAsync()

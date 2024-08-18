@@ -32,7 +32,6 @@
     <None Remove="Dtos\" />
     <None Remove="Helpers\" />
     <None Remove="Profiles\" />
-    <None Remove="Migrations\" />
     <None Remove="Services\" />
     <None Remove="External\" />
   </ItemGroup>
@@ -44,7 +43,6 @@
     <Folder Include="Dtos\" />
     <Folder Include="Helpers\" />
     <Folder Include="Profiles\" />
-    <Folder Include="Migrations\" />
     <Folder Include="Services\" />
     <Folder Include="External\" />
 
