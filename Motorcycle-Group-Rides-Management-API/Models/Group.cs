@@ -6,9 +6,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Motorcycle_Group_Rides_Management_API.Models
 {
     [Table("Groups")]
-	public class Group
-	{
-		
+    public class Group
+    {
+
         [Key]
         public Guid GroupID { get; set; }
 
@@ -18,7 +18,7 @@ namespace Motorcycle_Group_Rides_Management_API.Models
         public string Description { get; set; }
         public DateTime CreationDate { get; set; }
         public List<GroupRide> GroupRides { get; set; }
-    
-	}
+
+    }
 }
 
