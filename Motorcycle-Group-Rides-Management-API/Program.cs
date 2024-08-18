@@ -13,11 +13,12 @@ using Motorcycle_Group_Rides_Management_API.Services;
 using MySqlConnector;
 using Motorcycle_Group_Rides_Management_API.IncidentReportProfile;
 using Motorcycle_Group_Rides_Management_API.Profiles;
-using Motorcycle_Group_Rides_Management_API.Services;
+
 using Umbraco.Core.Composing.CompositionExtensions;
 using Umbraco.Core.Services;
+using System.Text.Json.Serialization;
 
-//>>>>>>> 1a3bb258d5330293170811db8d51acc71641a842
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,8 +39,10 @@ builder.Services.AddTransient<IFeedbackRepository, FeedbackRepository>();
 builder.Services.AddTransient<ICompatibilityRepository, CompatibilityRepository>();
 //builder.Services.AddTransient<ICompatibilityService, CompatibilityService>();
 
-
-
+builder.Services.AddScoped<ICompatibilityService, CompatibilityService>();
+builder.Services.AddScoped<IFeedbackService, FeedbackService>();
+builder.Services.AddScoped<IStatisticsRepository, StatisticsRepository>();
+builder.Services.AddScoped<IStatisticsService, StatisticsService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IRouteService, RouteService>();
@@ -76,6 +79,13 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// Add services to the container.
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Configure JSON options to serialize enums as strings
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 
 builder.Services.AddScoped<IIncidentReportRepository, IncidentReportRepository>();

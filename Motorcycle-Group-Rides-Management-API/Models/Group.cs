@@ -20,8 +20,8 @@ namespace Motorcycle_Group_Rides_Management_API.Models
         public List<GroupRide> GroupRides { get; set; } 
     
 	}
-        public List<GroupRide> GroupRides { get; set; }
+      
 
-    }
+    
 }
 

@@ -1,49 +1,59 @@
 ﻿using System;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 using Motorcycle_Group_Rides_Management_API.Data;
 using Motorcycle_Group_Rides_Management_API.Interfaces;
 using Motorcycle_Group_Rides_Management_API.Models;
 
 namespace Motorcycle_Group_Rides_Management_API.Repository
 {
-	public class MotorcycleRepository:IMotorcycleRepository
-	{
+    public class MotorcycleRepository : IMotorcycleRepository
+    {
         private GroupRidesContext _context;
         public MotorcycleRepository(GroupRidesContext motorcycleContext)
 		{
             _context = motorcycleContext;
         }
 
-        public void Create(Motorcycle motorcycle)
+        public async Task CreateAsync(Motorcycle motorcycle)
         {
-            _context.Motorcycles.Add(motorcycle);
+            await _context.Motorcycles.AddAsync(motorcycle);
         }
 
-        public void Delete(int id)
+
+        public async Task DeleteAsync(int id)
         {
-            var selectedMotorcycle = _context.Motorcycles.Find(id);
-            _context.Motorcycles.Remove(selectedMotorcycle);
+            var motorcycle = await _context.Motorcycles.FindAsync(id);
+            _context.Motorcycles.Remove(motorcycle);
         }
 
-        public List<Motorcycle> GetAll()
+     
+        public async Task<List<Motorcycle>> GetAllAsync()
         {
-            return _context.Motorcycles.ToList();
+            return await _context.Motorcycles.ToListAsync();
         }
 
-        public Motorcycle GetById(int id)
+
+        public async Task<Motorcycle> GetByIdAsync(int id)
         {
-            return _context.Motorcycles.Find(id);
+            return await _context.Motorcycles.FindAsync(id);
         }
 
-        public bool SaveChanges()
+    
+        public async Task SaveChangesAsync()
         {
-            _context.SaveChanges();
-            return true;
+            await _context.SaveChangesAsync();
         }
 
-        public void Update(Motorcycle motorcycle)
+       
+
+        public async Task UpdateAsync(Motorcycle motorcycle)
         {
             _context.Motorcycles.Update(motorcycle);
+            await _context.SaveChangesAsync();
         }
+
+       
     }
 }
 

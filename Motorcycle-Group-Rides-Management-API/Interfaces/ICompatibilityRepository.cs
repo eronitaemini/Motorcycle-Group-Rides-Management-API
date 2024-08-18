@@ -5,12 +5,16 @@ namespace Motorcycle_Group_Rides_Management_API.Interfaces
 {
     public interface ICompatibilityRepository
     {
-       
-        Compatibility GetCompatibilityById(int compatibilityId);
-        void AddCompatibility(Compatibility compatibility);
-        void UpdateCompatibility(Compatibility compatibility);
-        void DeleteCompatibility(Compatibility compatibility);
-        void SaveChanges();
+
+
+        Task<Compatibility> GetByIdAsync(int id);
+        Task<IEnumerable<Compatibility>> GetAllAsync();
+        Task AddAsync(Compatibility compatibility);
+        Task UpdateAsync(Compatibility compatibility);
+        Task DeleteAsync(int id);
+        Task<bool> SaveChangesAsync();
+        Task<IEnumerable<Compatibility>> GetCompatibilitiesAsync(string searchQuery, string sortBy, bool ascending, int pageNumber, int pageSize);
+
 
     }
 }

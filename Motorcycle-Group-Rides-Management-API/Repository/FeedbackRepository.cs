@@ -7,21 +7,25 @@ namespace Motorcycle_Group_Rides_Management_API.Repository
 {
     public class FeedbackRepository : IFeedbackRepository
     {
-        private readonly IFeedbackRepository _feedbackRepository;
+
         private GroupRidesContext _context;
-        public FeedbackRepository(GroupRidesContext context) 
+        public FeedbackRepository(GroupRidesContext context)
         {
-              this._context = context;
+            this._context = context;
         }
 
-        public void Create(Feedback feedback)
+        public async Task CreateAsync(Feedback feedback)
         {
-            _context.Feedbacks.Add(feedback);
+            await _context.Feedbacks.AddAsync(feedback);
+
+
+
+
         }
 
-        public void Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            var selectedfeedback = _context.Feedbacks.Find(id);
+            var selectedfeedback = await _context.Feedbacks.FindAsync(id);
             _context.Feedbacks.Remove(selectedfeedback);
         }
 
@@ -29,30 +33,102 @@ namespace Motorcycle_Group_Rides_Management_API.Repository
         //{
         //  return _context.Feedbacks.ToList();
         //}
-        public IEnumerable<Feedback> GetAllFeedbackByGroupRidesId(Guid grouprideId)
+        public async Task<List<Feedback>> GetAllAsync()
+        {
+            return await _context.Feedbacks.ToListAsync();
+
+        }
+        public async Task<IEnumerable<Feedback>> GetAllFeedbackByGroupRidesIdAsync(Guid grouprideId)
         {
             return _context.Feedbacks.Include(x => x.GroupRide).Where(x => x.GroupRideId == grouprideId);
         }
-        public Feedback GetById(Guid id)
+        public async Task<Feedback> GetByIdAsync(Guid id)
         {
-            return _context.Feedbacks.Include(x => x.GroupRide).FirstOrDefault(x => x.GroupRideId == id);
+            //   return await _context.Feedbacks
+            //  .Include(x => x.GroupRide)
+            //   .FirstOrDefaultAsync(x => x.GroupRideId == id);
 
-            // return _context.Feedbacks.Find(id);
+            return await _context.Feedbacks.FirstOrDefaultAsync(f => f.FeedbackId == id);
+
+            //   return  await _context.Feedbacks.FindAsync(id);
+
 
 
         }
 
 
 
-        public bool SaveChanges()
+        public async Task<bool> SaveChangesAsync()
         {
-            _context.SaveChanges();
-            return true;
+            return (await _context.SaveChangesAsync()) > 0;
         }
 
-        public void Update(Feedback feedback)
+        public async Task UpdateAsync(Feedback feedback)
         {
             _context.Update(feedback);
+            await _context.SaveChangesAsync();
         }
+
+        /*    public async Task<List<Feedback>> GetFeedbacksAsync(Guid? groupRideId, int pageNumber, int pageSize, int? rating)
+            {
+                var query = _context.Feedbacks.AsQueryable();
+
+                if (groupRideId.HasValue)
+                {
+                    query = query.Where(f => f.GroupRideId == groupRideId.Value);
+                }
+
+                if (rating.HasValue)
+                {
+                    query = query.Where(f => f.Rating == rating.Value);
+                }
+
+                return await query
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync();
+
+
+            }
+        */
+        public async Task<IEnumerable<Feedback>> GetFeedbacksAsync( string searchQuery, string sortBy,bool ascending,int pageNumber,  int pageSize,  int? minRating = null, int? maxRating = null)
+        {
+            var query = _context.Feedbacks.AsQueryable();
+
+            // Filtering by search query
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                // Handle GUID search query
+                if (Guid.TryParse(searchQuery, out Guid userId))
+                {
+                    query = query.Where(m => m.UserId == userId);
+                }
+                else
+                {
+                    query = query.Where(m => m.Comments.Contains(searchQuery));
+                }
+            }
+
+            // Filtering by rating range
+            if (minRating.HasValue)
+            {
+                query = query.Where(m => m.Rating >= minRating.Value);
+            }
+            if (maxRating.HasValue)
+            {
+                query = query.Where(m => m.Rating <= maxRating.Value);
+            }
+
+            // Sorting
+            query = ascending
+                ? query.OrderBy(m => EF.Property<object>(m, sortBy))
+                : query.OrderByDescending(m => EF.Property<object>(m, sortBy));
+
+            // Paging
+            return await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+        }
+
+
+
     }
 }

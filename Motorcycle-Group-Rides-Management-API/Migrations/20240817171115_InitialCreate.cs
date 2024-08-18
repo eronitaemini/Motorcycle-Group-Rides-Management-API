@@ -130,25 +130,23 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
                 name: "Routes",
                 columns: table => new
                 {
-                    RouteID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    StartPoint = table.Column<string>(type: "longtext", nullable: false)
+                    RouteId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    StartingPoint = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    EndPoint = table.Column<string>(type: "longtext", nullable: false)
+                    EndingPoint = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Distance = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     EstimatedTime = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    GoogleMapsRouteData = table.Column<string>(type: "longtext", nullable: false)
+                    RouteType = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    SafetyTips = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Type = table.Column<int>(type: "int", nullable: false)
+                    Popularity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Routes", x => x.RouteID);
+                    table.PrimaryKey("PK_Routes", x => x.RouteId);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -312,13 +310,12 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Description = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    RouteID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     StartPoint = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     EndPoint = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Compatible = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    GroupID = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci"),
-                    UserId = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci")
+                    GroupID = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
@@ -329,10 +326,11 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
                         principalTable: "Groups",
                         principalColumn: "GroupID");
                     table.ForeignKey(
-                        name: "FK_GroupRides_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id");
+                        name: "FK_GroupRides_Routes_RouteID",
+                        column: x => x.RouteID,
+                        principalTable: "Routes",
+                        principalColumn: "RouteId",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -372,8 +370,7 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Rating = table.Column<int>(type: "int", nullable: false),
                     DateSubmitted = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    User = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    userId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    UserId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     GroupRideId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
                 },
                 constraints: table =>
@@ -386,8 +383,33 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Feedbacks_Users_User",
-                        column: x => x.User,
+                        name: "FK_Feedbacks_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "GroupRideUser",
+                columns: table => new
+                {
+                    GroupRidesId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    ParticipantsId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupRideUser", x => new { x.GroupRidesId, x.ParticipantsId });
+                    table.ForeignKey(
+                        name: "FK_GroupRideUser_GroupRides_GroupRidesId",
+                        column: x => x.GroupRidesId,
+                        principalTable: "GroupRides",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GroupRideUser_Users_ParticipantsId",
+                        column: x => x.ParticipantsId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -462,9 +484,9 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
                 column: "GroupRideId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Feedbacks_User",
+                name: "IX_Feedbacks_UserId",
                 table: "Feedbacks",
-                column: "User");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GroupRides_GroupID",
@@ -472,9 +494,14 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
                 column: "GroupID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GroupRides_UserId",
+                name: "IX_GroupRides_RouteID",
                 table: "GroupRides",
-                column: "UserId");
+                column: "RouteID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupRideUser_ParticipantsId",
+                table: "GroupRideUser",
+                column: "ParticipantsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Motorcycles_OwnerID",
@@ -512,13 +539,13 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
                 name: "Feedbacks");
 
             migrationBuilder.DropTable(
+                name: "GroupRideUser");
+
+            migrationBuilder.DropTable(
                 name: "IncidentReports");
 
             migrationBuilder.DropTable(
                 name: "Motorcycles");
-
-            migrationBuilder.DropTable(
-                name: "Routes");
 
             migrationBuilder.DropTable(
                 name: "UserGroupRides");
@@ -533,10 +560,13 @@ namespace MotorcycleGroupRidesManagementAPI.Migrations
                 name: "GroupRides");
 
             migrationBuilder.DropTable(
+                name: "Users");
+
+            migrationBuilder.DropTable(
                 name: "Groups");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Routes");
         }
     }
 }

@@ -10,8 +10,7 @@ namespace Motorcycle_Group_Rides_Management_API.Profiles
 		public GroupProfile()
 		{
 			CreateMap<Group, ViewGroupDto>();
-			CreateMap<CreateGroupDto, Group>();
-			CreateMap<UpdateGroupDto, Group>();
+			CreateMap<CreateUpdateGroupDto, Group>();
 		}
 	}
 }

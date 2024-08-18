@@ -16,29 +16,18 @@ namespace Motorcycle_Group_Rides_Management_API.Data
         public DbSet<Group> Groups { get; set; }
         public DbSet<GroupRide> GroupRides { get; set; }
         public DbSet<Motorcycle> Motorcycles { get; set; }
-//<<<<<<< HEAD
-		public DbSet<Group> Groups { get; set; }
-		public DbSet<GroupRide> GroupRides { get; set; }
-		public DbSet<Motorcycle> Motorcycles { get; set; }
-		public DbSet<Models.Route> Routes { get; set; }
+
+		
+	//	public DbSet<Models.Route> Routes { get; set; }
 		public DbSet<User> Users { get; set; }
 	//	public DbSet<UserGroupRide> UserGroupRides { get; set; }
         public DbSet<Feedback> Feedbacks { get; set; }
         public DbSet<Compatibility> Compatibilities { get; set; }
-
-//=======
-       
-    //    public DbSet<Motorcycle> Motorcycles { get; set; }
-
-        public DbSet<User> Users { get; set; }
         public DbSet<UserGroupRide> UserGroupRides { get; set; }
         public DbSet<Routes> Routes { get; set; }
-
-
         public DbSet<IncidentReport> IncidentReports { get; set; }
-   //     public DbSet<GroupRide> GroupRides { get; set; }
-       public DbSet<UserGroupRide> UserGroupRides { get; set; }
-
+  
+   
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -57,7 +46,7 @@ namespace Motorcycle_Group_Rides_Management_API.Data
                 .HasForeignKey(ug => ug.GroupRideId);
         }
 
-//>>>>>>> 1a3bb258d5330293170811db8d51acc71641a842
+
 
     }
 }

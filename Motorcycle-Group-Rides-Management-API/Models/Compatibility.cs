@@ -9,7 +9,7 @@ namespace Motorcycle_Group_Rides_Management_API.Models
         public int CompatibilityId { get; set; }
 
         [Required]
-        public MotorcyleType MotorcycleType { get; set; }
+        public MotorcycleType MotorcycleType { get; set; }
 
         [Required]
         public RouteType RouteType { get; set; }

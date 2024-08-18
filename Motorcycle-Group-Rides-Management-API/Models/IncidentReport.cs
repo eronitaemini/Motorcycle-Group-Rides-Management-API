@@ -11,5 +11,7 @@
         public DateTime Time { get; set; }
         public int Severity { get; set; }
         public string Status { get; set; } = "pending";
+
+       
     }
 }

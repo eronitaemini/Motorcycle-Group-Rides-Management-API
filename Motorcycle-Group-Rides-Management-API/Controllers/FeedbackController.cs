@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
-using Motorcycle_Group_Rides_Management_API.Interfaces;
-using Motorcycle_Group_Rides_Management_API.Models;
-using static Motorcycle_Group_Rides_Management_API.Dtos.GroupDto;
 using static Motorcycle_Group_Rides_Management_API.Dtos.FeedbackDto;
+using Motorcycle_Group_Rides_Management_API.Services;
+
+using Motorcycle_Group_Rides_Management_API.Dtos;
+using Umbraco.Core.Persistence;
+using static Umbraco.Core.Constants;
 
 namespace Motorcycle_Group_Rides_Management_API.Controllers
 {
@@ -14,86 +16,155 @@ namespace Motorcycle_Group_Rides_Management_API.Controllers
     {
         // GET: FeedbackController
         private IMapper _mapper;
-        private IFeedbackRepository _repo;
-        public FeedbackController(IMapper mapper, IFeedbackRepository repo)
+        private readonly IFeedbackService _feedbackService;
+        public FeedbackController(IMapper mapper, IFeedbackService feedbackService)
         {
             _mapper = mapper;
-            _repo = repo;
+            _feedbackService = feedbackService;
         }
 
 
 
         [HttpGet]
-        public ActionResult<IEnumerable<ViewFeedbackDto>> GetAllFeedbacks(Guid groupRideId)
+        public async Task <IActionResult> GetAllFeedbacks()
         {
-            try
-            {
-                var feedbacks = _repo.GetAllFeedbackByGroupRidesId(groupRideId);
 
-                var viewFeedbackDtoList = _mapper.Map<IEnumerable<ViewFeedbackDto>>(feedbacks);
-
-                return Ok(viewFeedbackDtoList);
-            }
-            catch (KeyNotFoundException e)
-            {
-                Console.WriteLine(e.Message);
-                return BadRequest();
-            }
+            var allFeedbacks = await _feedbackService.GetAllAsync();
+            return Ok(allFeedbacks);
 
         }
 
         [HttpGet("{id}")]
-        public ActionResult<ViewGroupDto> GetfeedbackById(Guid id)
+        public async Task<IActionResult> GetfeedbackById(Guid id)
         {
-            var feedback = _repo.GetById(id);
-            if (feedback != null)
+            //  var feedback =  await _feedbackService.GetFeedbackByIdAsync(id);
+            //  if (feedback != null)
+            //  {
+            //      var viewFeedbackDto = _mapper.Map<FeedbackDto>(feedback);
+            //      return Ok(viewFeedbackDto);
+            //  }
+
+            //  return BadRequest();
+
+            if (id == Guid.Empty)
             {
-                var viewFeedbackDto = _mapper.Map<ViewFeedbackDto>(feedback);
-                return Ok(viewFeedbackDto);
+                return BadRequest("Invalid ID");
             }
 
-            return BadRequest();
+            var feedback = await _feedbackService.GetFeedbackByIdAsync(id);
+            if (feedback == null)
+            {
+                return NotFound("Feedback not found");
+            }
+
+            return Ok(feedback);
         }
 
-        [HttpPost]
-        public ActionResult SubmitFeedback([FromBody] CreateFeedbackDto createFeedbackDto)
+
+      
+
+    [HttpPost]
+        public async Task<IActionResult> SubmitFeedback([FromBody] CreateFeedbackDto createFeedbackDto)
         {
-         /*   var feedback = _mapper.Map<Feedback>(createFeedbackDto);
-            feedback.DateSubmitted = DateTime.Now;
-            _repo.Create(feedback);
-            _repo.SaveChanges();*/
-            return new CreatedResult("location", createFeedbackDto.Comments);
+            /*   var feedback = _mapper.Map<Feedback>(createFeedbackDto);
+               feedback.DateSubmitted = DateTime.Now;
+               _repo.Create(feedback);
+               _repo.SaveChanges();*/
+          //  await _feedbackService.CreateFeedbackAsync(createFeedbackDto);
+            
+         //   return new CreatedResult("location", createFeedbackDto.Comments);
+            try
+            {
+                await _feedbackService.CreateFeedbackAsync(createFeedbackDto);
+                return Ok("Feedback Submited Successfully !"); // Or appropriate response
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+
+
+
         }
+
+
 
         [HttpPut("{id}")]
-        public ActionResult UpdateFeedback(int id, [FromBody] UpdateFeedbackDto updateFeedbackDto)
+        public async Task<IActionResult> UpdateFeedback(Guid id, [FromBody] UpdateFeedbackDto updateFeedbackDto)
         {
-            if (id != updateFeedbackDto.FeedbackId)
+            //   try
+            //   {
+            //       await _feedbackService.UpdateFeedbackAsync(id, updateFeedbackDto);
+            //       return NoContent();
+
+            //   }
+            //   catch (ArgumentException argumentException)
+            //   {
+            //       Console.WriteLine(argumentException);
+            //       return BadRequest("ID Mismatch");
+            //   }
+            //   catch (KeyNotFoundException keyNotFoundException)
+            //   {
+            //       Console.WriteLine(keyNotFoundException);
+            //       return NotFound("Feedback not found");
+            //   }
+
+            if (updateFeedbackDto == null)
             {
-                return BadRequest();
+                return BadRequest("updateFeedbackDto is required.");
             }
 
-            var feedback = _mapper.Map<Feedback>(updateFeedbackDto);
-            _repo.Update(feedback);
-            _repo.SaveChanges();
+            try
+            {
+                await _feedbackService.UpdateFeedbackAsync(id, updateFeedbackDto);
+                return NoContent();
+            }
+            catch (ArgumentException argumentException)
+            {
+                Console.WriteLine(argumentException);
+                return BadRequest("ID Mismatch");
+            }
+            catch (KeyNotFoundException keyNotFoundException)
+            {
+                Console.WriteLine(keyNotFoundException);
+                return NotFound("Feedback not found");
+            }
 
-            return NoContent();
+           
         }
 
         [HttpDelete]
-        public ActionResult DeleteFeedback(Guid id)
+        public async Task<IActionResult> DeleteFeedback(Guid id)
         {
-            var feedback = _repo.GetById(id);
-
-            if (feedback != null)
+            try
             {
-                _repo.Delete(id);
-                _repo.SaveChanges();
+                await _feedbackService.DeleteFeedbackAsync(id);
                 return NoContent();
             }
-            return BadRequest();
+            catch (KeyNotFoundException keyNotFoundExeption)
+            {
+                Console.WriteLine(keyNotFoundExeption);
+                return NotFound("The feedback was not found and couldn't be deleted");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return StatusCode(500, "An error occurred while deleting the feedback");
+            }
 
         }
 
+
+
+        [HttpGet("search")]
+        public async Task<ActionResult> GetFeedbacks(string searchQuery = "", string sortBy = "Comments", bool ascending = true, int pageNumber = 1, int pageSize = 10, int? minRating = null, int? maxRating = null)
+        {
+            var feedbacks = await _feedbackService.GetFeedbacksAsync(searchQuery, sortBy, ascending, pageNumber, pageSize, minRating, maxRating);
+            return Ok(feedbacks);
+        }
     }
 }

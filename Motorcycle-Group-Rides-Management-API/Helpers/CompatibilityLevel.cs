@@ -2,8 +2,8 @@
 {
     public enum CompatibilityLevel
     {
-        HIGHLY_COMPATIBLE,
-        MODERATELY_COMPATIBLE,
-        NOT_COMPATIBLE
+        HIGHLY_COMPATIBLE = 1,
+        MODERATELY_COMPATIBLE = 2,
+        NOT_COMPATIBLE = 3
     }
 }

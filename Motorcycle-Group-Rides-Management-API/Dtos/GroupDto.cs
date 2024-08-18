@@ -12,21 +12,12 @@ namespace Motorcycle_Group_Rides_Management_API.Dtos
             public DateTime CreationDate { get; set; }
         }
         
-        public class UpdateGroupDto
+        public class CreateUpdateGroupDto
         {
             public Guid GroupID { get; set; }
-     
             public string Name { get; set; }
             public string Description { get; set; }
     
-        }
-
-        public class CreateGroupDto
-        {
-            public string Name { get; set; }
-            public string Description { get; set; }
-            public DateTime CreationDate { get; set; }
-        
         }
 
 	}

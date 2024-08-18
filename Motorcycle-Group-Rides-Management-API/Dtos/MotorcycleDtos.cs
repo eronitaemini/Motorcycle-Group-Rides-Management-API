@@ -12,14 +12,14 @@ namespace Motorcycle_Group_Rides_Management_API.Dtos
             public string Brand { get; set; }
             public string Model { get; set; }
             public int ProductionYear { get; set; }
-            public MotorcyleType Type { get; set; }
+            public string Type { get; set; }
         }
 
         public class CreateMotorcycleDto
         {
             public string Brand { get; set; }
             public string Model { get; set; }
-            public MotorcyleType Type { get; set; }
+            public MotorcycleType Type { get; set; }
             public int EngineSize { get; set; }
             public Guid OwnerID { get; set; }
             public int ProductionYear { get; set; }
@@ -30,7 +30,7 @@ namespace Motorcycle_Group_Rides_Management_API.Dtos
             public int MotorcycleID { get; set; }
             public string Brand { get; set; }
             public string Model { get; set; }
-            public MotorcyleType Type { get; set; }
+            public MotorcycleType Type { get; set; }
             public int EngineSize { get; set; }
         }
     }

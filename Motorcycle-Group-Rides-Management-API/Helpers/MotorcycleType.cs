@@ -1,18 +1,18 @@
 ﻿using System;
 namespace Motorcycle_Group_Rides_Management_API.Helpers
 {
-	public enum MotorcyleType
+	public enum MotorcycleType
 	{
-        CRUISER,
-        SPORT,
-        TOURING,
-        STANDARD,
-        DUALSPORT,
-        DIRTBIKE,
-        SCOOTER,
-        ELECTRIC,
-        ADVENTURE,
-        CUSTOM
+        CRUISER = 1,
+        SPORT = 2,
+        TOURING = 3 ,
+        STANDARD = 4 ,
+        DUALSPORT = 5,
+        DIRTBIKE = 6,
+        SCOOTER = 7,
+        ELECTRIC = 8,
+        ADVENTURE = 9 ,
+        CUSTOM = 10
     }
 }
 
