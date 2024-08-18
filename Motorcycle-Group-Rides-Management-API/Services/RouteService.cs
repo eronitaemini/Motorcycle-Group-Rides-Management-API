@@ -3,6 +3,7 @@ using AutoMapper;
 using Motorcycle_Group_Rides_Management_API.External;
 using Motorcycle_Group_Rides_Management_API.Interfaces;
 using Motorcycle_Group_Rides_Management_API.Models;
+using Motorcycle_Group_Rides_Management_API.Repository;
 using static Motorcycle_Group_Rides_Management_API.Dtos.RoutesDto;
 
 namespace Motorcycle_Group_Rides_Management_API.Services
@@ -12,12 +13,15 @@ namespace Motorcycle_Group_Rides_Management_API.Services
         private readonly IRouteRepository _repo;
         private readonly IMapper _mapper;
         private readonly IRouteInfo _routeInfo;
-		public RouteService(IRouteRepository repo, IMapper mapper, IRouteInfo routeInfo)
+
+        private readonly ILogger<RouteService> _logger;
+        public RouteService(IRouteRepository repo, IMapper mapper, IRouteInfo routeInfo, ILogger<RouteService> logger)
 		{
             _repo = repo;
             _mapper = mapper;
             _routeInfo = routeInfo;
-		}
+            _logger = logger;
+        }
 
         public async Task CreateAsync(CreateRouteDto createRouteDto)
         {
@@ -69,6 +73,8 @@ namespace Motorcycle_Group_Rides_Management_API.Services
             return null;
         }
 
+
+
         public async Task UpdateAsync(Guid RouteId, UpdateRouteDto updateRouteDto)
         {
             var route = await _repo.GetByIdAsync(RouteId);
@@ -88,10 +94,17 @@ namespace Motorcycle_Group_Rides_Management_API.Services
             await _repo.SaveChangesAsync();
         }
 
+       async Task<IEnumerable<Routes>> IRouteService.GetRoutesAsync(string searchQuery, string sortBy, bool ascending, int pageNumber, int pageSize)
+        {
+            _logger.LogInformation("Fetching routes with searchQuery: {SearchQuery}, sortBy: {SortBy}, ascending: {Ascending}, pageNumber: {PageNumber}, pageSize: {PageSize}",
+                                searchQuery, sortBy, ascending, pageNumber, pageSize);
 
-       
+            var routes = await _repo.GetRoutesAsync(searchQuery, sortBy, ascending, pageNumber, pageSize);
 
+            _logger.LogInformation("{RouteCount} routes fetched", routes.Count());
 
+            return routes;
+        }
     }
 }
 

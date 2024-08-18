@@ -21,7 +21,6 @@ namespace Motorcycle_Group_Rides_Management_API.Data
         public DbSet<UserGroupRide> UserGroupRides { get; set; }
         public DbSet<Routes> Routes { get; set; }
 
-
         public DbSet<IncidentReport> IncidentReports { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -40,6 +39,14 @@ namespace Motorcycle_Group_Rides_Management_API.Data
                 .HasOne(ug => ug.GroupRide)
                 .WithMany(gr => gr.UserGroupRides)
                 .HasForeignKey(ug => ug.GroupRideId);
+          
+           modelBuilder.Entity<GroupRide>()
+                .HasMany(gr => gr.Routes)
+                .WithOne(r => r.GroupRide)
+                .HasForeignKey(r => r.GroupRideId)
+                .IsRequired();
+
+            base.OnModelCreating(modelBuilder);
         }
 
 

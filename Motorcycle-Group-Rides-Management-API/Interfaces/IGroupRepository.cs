@@ -11,6 +11,8 @@ namespace Motorcycle_Group_Rides_Management_API.Interfaces
         public Task DeleteAsync(Guid id);
         public Task UpdateAsync(Group group);
         public Task SaveChangesAsync();
+        Task<IEnumerable<Group>> GetGroupsAsync(string searchQuery, string sortBy, bool ascending, int pageNumber, int pageSize);
+
     }
 }
 

@@ -11,6 +11,7 @@ namespace Motorcycle_Group_Rides_Management_API.Services
         public Task CreateAsync(CreateRouteDto route);
         public Task DeleteAsync(Guid id);
         public Task UpdateAsync(Guid RouteId, UpdateRouteDto route);
+        Task<IEnumerable<Routes>> GetRoutesAsync(string searchQuery, string sortBy, bool ascending, int pageNumber, int pageSize);
     }
 }
 

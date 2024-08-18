@@ -3,6 +3,7 @@ using Motorcycle_Group_Rides_Management_API.Data;
 using Motorcycle_Group_Rides_Management_API.Interfaces;
 using Motorcycle_Group_Rides_Management_API.Models;
 using Microsoft.EntityFrameworkCore;
+
 namespace Motorcycle_Group_Rides_Management_API.Repository
 {
     public class GroupRepository : IGroupRepository
@@ -35,6 +36,25 @@ namespace Motorcycle_Group_Rides_Management_API.Repository
         {
             return await _context.Groups.FindAsync(id);
 
+        }
+
+        public async Task<IEnumerable<Group>> GetGroupsAsync(string searchQuery, string sortBy, bool ascending, int pageNumber, int pageSize)
+        {
+            var query = _context.Groups.AsQueryable();
+
+            // Filtering
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                query = query.Where(g => g.Name.Contains(searchQuery) || g.Description.Contains(searchQuery));
+            }
+
+            // Sorting
+            query = ascending
+                ? query.OrderBy(g => EF.Property<object>(g, sortBy))
+                : query.OrderByDescending(g => EF.Property<object>(g, sortBy));
+
+            // Paging
+            return await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
         }
 
         public async Task SaveChangesAsync()

@@ -92,7 +92,30 @@ namespace Motorcycle_Group_Rides_Management_API.Controllers
 
         }
 
+        [HttpGet("search")]
+        public async Task<ActionResult> GetMotorcycles(string searchQuery = "", string sortBy = "Brand", bool ascending = true, int pageNumber = 1, int pageSize = 10)
+        {
+            var motorcycles = await _motorcycleService.GetMotorcyclesAsync(searchQuery, sortBy, ascending, pageNumber, pageSize);
+            return Ok(motorcycles);
+        }
 
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult<List<MotorcycleDtos.ViewMotorcycleDto>>> GetMotorcyclesByUserId(Guid userId)
+        {
+            try
+            {
+                var motorcycles = await _motorcycleService.GetMotorcyclesByUserIdAsync(userId);
+                return Ok(motorcycles);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
     }
 }
 
