@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Motorcycle_Group_Rides_Management_API.Data;
-
 using Motorcycle_Group_Rides_Management_API.External;
 using Motorcycle_Group_Rides_Management_API.Interfaces;
 using Motorcycle_Group_Rides_Management_API.Repository;
@@ -12,21 +11,15 @@ using Motorcycle_Group_Rides_Management_API.Services;
 using MySqlConnector;
 using Motorcycle_Group_Rides_Management_API.IncidentReportProfile;
 using Motorcycle_Group_Rides_Management_API.Profiles;
-using Motorcycle_Group_Rides_Management_API.Services;
 using Umbraco.Core.Composing.CompositionExtensions;
 using Umbraco.Core.Services;
 
-
-
 var builder = WebApplication.CreateBuilder(args);
-
-
 
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 
 builder.Services.AddTransient<IMotorcycleRepository, MotorcycleRepository>();
 builder.Services.AddTransient<IGroupRepository, GroupRepository>();
@@ -42,12 +35,12 @@ var connectionString = builder.Configuration.GetConnectionString("Default");
 builder.Services.AddDbContext<GroupRidesContext>(options =>
     options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 32)))); // Use your MySQL version
 
-//  Identity
+// Identity
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<GroupRidesContext>()
     .AddDefaultTokenProviders();
 
-//  Authentication
+// Authentication
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = "Cookies";
@@ -67,8 +60,6 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-
-
 builder.Services.AddScoped<IIncidentReportRepository, IncidentReportRepository>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -82,9 +73,26 @@ builder.Services.AddScoped<IIncidentReportService, IncidentReportService>();
 builder.Services.AddScoped<IGroupRideService, GroupRideService>();
 builder.Services.AddScoped<Motorcycle_Group_Rides_Management_API.Services.IUserService, UserService>();
 
-
 var app = builder.Build();
 
+async Task InitializeRoles(RoleManager<IdentityRole> roleManager)
+{
+    if (!await roleManager.RoleExistsAsync("Admin"))
+    {
+        await roleManager.CreateAsync(new IdentityRole("Admin"));
+    }
+
+    if (!await roleManager.RoleExistsAsync("Rider"))
+    {
+        await roleManager.CreateAsync(new IdentityRole("Rider"));
+    }
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    await InitializeRoles(roleManager); // Initialize roles
+}
 
 if (app.Environment.IsDevelopment())
 {

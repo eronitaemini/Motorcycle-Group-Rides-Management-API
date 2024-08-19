@@ -28,19 +28,20 @@ namespace Motorcycle_Group_Rides_Management_API.Controllers
             _logger = logger;
         }
 
-        [HttpPost]
-        [Route("UserLogin")]
-        public async Task<IActionResult> Login([FromBody] UserDto userDto)
-        {
-            var user = await _userManager.FindByNameAsync(userDto.Username);
-
-            if (user != null && await _userManager.CheckPasswordAsync(user, userDto.Password))
+       [HttpPost]
+            [Route("UserLogin")]
+            public async Task<IActionResult> Login([FromBody] UserDto userDto)
             {
-                string token = GetToken(user);
-                return Ok(token);
+                var user = await _userManager.FindByNameAsync(userDto.Username);
+
+                if (user != null && await _userManager.CheckPasswordAsync(user, userDto.Password))
+                {
+                    string token = await GetToken(user);  // Await the GetToken method
+                    return Ok(token);
+                }
+                return NotFound("User is not found");
             }
-            return NotFound("User is not found");
-        }
+
 
         [HttpPost]
         [Route("UserRegister")]
@@ -89,25 +90,30 @@ namespace Motorcycle_Group_Rides_Management_API.Controllers
 
 
 
-        private string GetToken(IdentityUser user)
-        {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var claims = new Claim[]
+       private async Task<string> GetToken(IdentityUser user)
             {
-                new Claim(ClaimTypes.Email, user.Email)
-            };
+                var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+                var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(_config["Jwt:Issuer"],
-                   _config["Jwt:Audience"],
-                   claims,
-                   expires: DateTime.Now.AddMinutes(15),
-                   signingCredentials: credentials);
+                var roles = await _userManager.GetRolesAsync(user);
+                var roleClaims = roles.Select(role => new Claim(ClaimTypes.Role, role));
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.UserName),
+                    new Claim(ClaimTypes.Email, user.Email)
+                }.Union(roleClaims);
 
-        }
+                var token = new JwtSecurityToken(_config["Jwt:Issuer"],
+                    _config["Jwt:Audience"],
+                    claims,
+                    expires: DateTime.Now.AddMinutes(15),
+                    signingCredentials: credentials);
+
+                return new JwtSecurityTokenHandler().WriteToken(token);
+            }
+
+    
     }
 }
 

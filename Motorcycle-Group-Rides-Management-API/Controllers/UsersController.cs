@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Motorcycle_Group_Rides_Management_API.Authentications;
 using Motorcycle_Group_Rides_Management_API.Dtos;
@@ -49,7 +50,8 @@ namespace Motorcycle_Group_Rides_Management_API.Controllers
 
             return Ok(userDto);
         }
-
+        
+        [Authorize(Roles = "Admin")]
         [HttpDelete("DeleteUser")]
         public async Task<IActionResult> DeleteUser(string id)
         {

@@ -13,5 +13,6 @@ namespace Motorcycle_Group_Rides_Management_API.Authentications
 
         [Required(ErrorMessage = "Password is required")]
         public string Password { get; set; }
+        public string Role { get; internal set; }
     }
 }
