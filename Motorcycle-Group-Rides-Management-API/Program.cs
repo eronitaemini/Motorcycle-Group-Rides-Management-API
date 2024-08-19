@@ -9,12 +9,18 @@ using Motorcycle_Group_Rides_Management_API.External;
 using Motorcycle_Group_Rides_Management_API.Interfaces;
 using Motorcycle_Group_Rides_Management_API.Repository;
 using Motorcycle_Group_Rides_Management_API.Services;
+//<<<<<<< HEAD
 using MySqlConnector;
 using Motorcycle_Group_Rides_Management_API.IncidentReportProfile;
 using Motorcycle_Group_Rides_Management_API.Profiles;
 using Motorcycle_Group_Rides_Management_API.Services;
 using Umbraco.Core.Composing.CompositionExtensions;
 using Umbraco.Core.Services;
+
+using Umbraco.Core.Composing.CompositionExtensions;
+using Umbraco.Core.Services;
+using System.Text.Json.Serialization;
+
 
 
 
@@ -32,9 +38,18 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
+//<<<<<<< HEAD
 builder.Services.AddTransient<IMotorcycleRepository, MotorcycleRepository>();
 builder.Services.AddTransient<IGroupRepository, GroupRepository>();
 builder.Services.AddTransient<IRouteRepository, RoutesRepository>();
+builder.Services.AddTransient<IFeedbackRepository, FeedbackRepository>();
+builder.Services.AddTransient<ICompatibilityRepository, CompatibilityRepository>();
+//builder.Services.AddTransient<ICompatibilityService, CompatibilityService>();
+
+builder.Services.AddScoped<ICompatibilityService, CompatibilityService>();
+builder.Services.AddScoped<IFeedbackService, FeedbackService>();
+builder.Services.AddScoped<IStatisticsRepository, StatisticsRepository>();
+builder.Services.AddScoped<IStatisticsService, StatisticsService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IRouteService, RouteService>();
@@ -44,7 +59,7 @@ builder.Services.AddScoped<IRouteInfo, RouteInfoService>();
 
 var connectionString = builder.Configuration.GetConnectionString("Default");
 builder.Services.AddDbContext<GroupRidesContext>(options =>
-    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 32)))); // Use your MySQL version
+    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 39)))); // Use your MySQL version
 
 //  Identity
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
@@ -71,6 +86,13 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// Add services to the container.
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Configure JSON options to serialize enums as strings
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 
 builder.Services.AddScoped<IIncidentReportRepository, IncidentReportRepository>();

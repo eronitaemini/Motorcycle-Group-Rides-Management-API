@@ -17,8 +17,11 @@ namespace Motorcycle_Group_Rides_Management_API.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime CreationDate { get; set; }
-        public List<GroupRide> GroupRides { get; set; }
+        public List<GroupRide> GroupRides { get; set; } 
+    
+	}
+      
 
-    }
+    
 }
 

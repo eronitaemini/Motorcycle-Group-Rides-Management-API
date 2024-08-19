@@ -36,6 +36,11 @@ namespace Motorcycle_Group_Rides_Management_API.Models
 
                 public ICollection<UserGroupRide> UserGroupRides { get; set; } = new List<UserGroupRide>();
 
+        [Required]
+        public List<Feedback> Feedbacks { get; set; }
+
+      //  public bool Compatible { get; set; }
+
 
         }
 

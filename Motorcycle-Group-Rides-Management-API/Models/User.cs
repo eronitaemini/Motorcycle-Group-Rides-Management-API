@@ -8,7 +8,7 @@ namespace Motorcycle_Group_Rides_Management_API.Models
     [Table("Users")]
     public class User
     {
-        internal readonly object UserGroupRides;
+      //  internal readonly object UserGroupRides;
 
         [Key]
         public Guid Id { get; set; }
@@ -28,6 +28,7 @@ namespace Motorcycle_Group_Rides_Management_API.Models
         public string PhoneNumber { get; set; }
 
         public List<Motorcycle> Motorcycles { get; set; }
+
        // public List<GroupRide> GroupRide {  get; set; }
         public ICollection<UserGroupRide> UserGroupRide { get; set; } = new List<UserGroupRide>();
 
@@ -36,6 +37,7 @@ namespace Motorcycle_Group_Rides_Management_API.Models
 
 
 
+//>>>>>>> 1a3bb258d5330293170811db8d51acc71641a842
 
     }
 }

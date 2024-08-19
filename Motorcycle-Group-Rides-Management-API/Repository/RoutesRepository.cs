@@ -35,7 +35,9 @@ namespace Motorcycle_Group_Rides_Management_API.Repository
         
         public async Task<Routes> GetByIdAsync(Guid id)
         {
-            return await _context.Routes.FindAsync(id);
+            return      
+                              
+                await _context.Routes.FindAsync(id);
         }
 
         public async Task<IEnumerable<Routes>> GetRoutesAsync(string searchQuery, string sortBy, bool ascending, int pageNumber, int pageSize)

@@ -33,6 +33,10 @@ namespace Motorcycle_Group_Rides_Management_API.Dtos
             public string Description { get; set; }
 
         }
+
+        
+
+
     }
 }
 

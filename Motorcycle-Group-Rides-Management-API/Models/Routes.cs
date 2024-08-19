@@ -17,7 +17,8 @@ namespace Motorcycle_Group_Rides_Management_API.Models
 		public RouteType RouteType { get; set; }
 		public string Description { get; set; }
 
-		public List<GroupRide> GroupRide { get; set; }
+        public int Popularity { get; set; }
+        public List<GroupRide> GroupRide { get; set; }
 	}
 }
 

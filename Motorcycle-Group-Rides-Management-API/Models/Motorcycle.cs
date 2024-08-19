@@ -17,7 +17,7 @@ using Motorcycle_Group_Rides_Management_API.Helpers;
         public string Model { get; set; }
         public int ProductionYear { get; set; }
 		[Required]
-        public MotorcyleType Type { get; set; }
+        public MotorcycleType Type { get; set; }
 		[Required]
 		public int  EngineSize { get; set; }
 		[Required]
