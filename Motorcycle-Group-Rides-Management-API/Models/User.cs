@@ -29,10 +29,6 @@ namespace Motorcycle_Group_Rides_Management_API.Models
 
         public List<Motorcycle> Motorcycles { get; set; }
 
-        public List<GroupRide> GroupRides { get; set; }
-        
-        public List <Feedback> Feedbacks { get; set; }
-
        // public List<GroupRide> GroupRide {  get; set; }
         public ICollection<UserGroupRide> UserGroupRide { get; set; } = new List<UserGroupRide>();
 

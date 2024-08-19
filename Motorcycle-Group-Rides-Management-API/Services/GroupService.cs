@@ -3,6 +3,7 @@ using AutoMapper;
 using Motorcycle_Group_Rides_Management_API.Dtos;
 using Motorcycle_Group_Rides_Management_API.Interfaces;
 using Motorcycle_Group_Rides_Management_API.Models;
+using Motorcycle_Group_Rides_Management_API.Repository;
 using static Motorcycle_Group_Rides_Management_API.Dtos.GroupDto;
 
 namespace Motorcycle_Group_Rides_Management_API.Services
@@ -10,7 +11,7 @@ namespace Motorcycle_Group_Rides_Management_API.Services
     public class GroupService : IGroupService
     {
 		private readonly IGroupRepository _repo;
-		private readonly IMapper _mapper;
+        private readonly IMapper _mapper;
 		public GroupService(IGroupRepository repo, IMapper mapper)
 		{
 			_repo = repo;
@@ -57,6 +58,11 @@ namespace Motorcycle_Group_Rides_Management_API.Services
                 return _mapper.Map<ViewGroupDto>(group);
             }
             return null;
+        }
+
+        public async Task<IEnumerable<Group>> GetGroupsAsync(string searchQuery, string sortBy, bool ascending, int pageNumber, int pageSize)
+        {
+            return await _repo.GetGroupsAsync(searchQuery, sortBy, ascending, pageNumber, pageSize);
         }
 
         public async Task UpdateAsync(Guid GroupId, GroupDto.CreateUpdateGroupDto updateGroupDto)

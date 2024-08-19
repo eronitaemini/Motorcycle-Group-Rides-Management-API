@@ -13,6 +13,9 @@ using Motorcycle_Group_Rides_Management_API.Services;
 using MySqlConnector;
 using Motorcycle_Group_Rides_Management_API.IncidentReportProfile;
 using Motorcycle_Group_Rides_Management_API.Profiles;
+using Motorcycle_Group_Rides_Management_API.Services;
+using Umbraco.Core.Composing.CompositionExtensions;
+using Umbraco.Core.Services;
 
 using Umbraco.Core.Composing.CompositionExtensions;
 using Umbraco.Core.Services;
@@ -25,7 +28,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 
-// Add services to the container.
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

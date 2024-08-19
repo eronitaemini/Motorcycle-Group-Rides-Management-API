@@ -40,6 +40,25 @@ namespace Motorcycle_Group_Rides_Management_API.Repository
                 await _context.Routes.FindAsync(id);
         }
 
+        public async Task<IEnumerable<Routes>> GetRoutesAsync(string searchQuery, string sortBy, bool ascending, int pageNumber, int pageSize)
+        {
+            var query = _context.Routes.AsQueryable();
+
+            // Filtering
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                query = query.Where(r => r.StartingPoint.Contains(searchQuery) || r.EndingPoint.Contains(searchQuery) || r.Description.Contains(searchQuery));
+            }
+
+            // Sorting
+            query = ascending
+                ? query.OrderBy(r => EF.Property<object>(r, sortBy))
+                : query.OrderByDescending(r => EF.Property<object>(r, sortBy));
+
+            // Paging
+            return await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+        }
+
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();

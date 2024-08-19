@@ -12,11 +12,14 @@ namespace Motorcycle_Group_Rides_Management_API.Services
 	{
         private readonly IMotorcycleRepository _repo;
         private IMapper _mapper;
-		public MotorcycleService(IMotorcycleRepository repo, IMapper mapper)
+        private readonly ILogger<MotorcycleService> _logger;
+
+        public MotorcycleService(IMotorcycleRepository repo, IMapper mapper, ILogger<MotorcycleService> logger)
 		{
             _repo = repo;
             _mapper = mapper;
-		}
+            _logger = logger;
+        }
 
         public async Task CreateAsync(MotorcycleDtos.CreateMotorcycleDto createMotorcycleDto)
         {
@@ -58,6 +61,18 @@ namespace Motorcycle_Group_Rides_Management_API.Services
             return null;
         }
 
+        public async Task<IEnumerable<Motorcycle>> GetMotorcyclesAsync(string searchQuery, string sortBy, bool ascending, int pageNumber, int pageSize)
+        {
+            _logger.LogInformation("Fetching motorcycles with searchQuery: {SearchQuery}, sortBy: {SortBy}, ascending: {Ascending}, pageNumber: {PageNumber}, pageSize: {PageSize}",
+                                searchQuery, sortBy, ascending, pageNumber, pageSize);
+
+            var motorcycles = await _repo.GetMotorcyclesAsync(searchQuery, sortBy, ascending, pageNumber, pageSize);
+
+            _logger.LogInformation("{MotorcycleCount} motorcycles fetched", motorcycles.Count());
+
+            return motorcycles;
+        }
+
         public async Task UpdateAsync(int id, MotorcycleDtos.UpdateMotorcycleDto updateMotorcycleDto)
         {
             var motorcycle = await _repo.GetByIdAsync(id);
@@ -75,6 +90,18 @@ namespace Motorcycle_Group_Rides_Management_API.Services
             _mapper.Map(updateMotorcycleDto, motorcycle);
             await _repo.UpdateAsync(motorcycle);
             await _repo.SaveChangesAsync();
+        }
+
+        public async Task<List<ViewMotorcycleDto>> GetMotorcyclesByUserIdAsync(Guid userId)
+        {
+            var motorcycles = await _repo.GetMotorcyclesByUserIdAsync(userId);
+
+            if (motorcycles == null || motorcycles.Count == 0)
+            {
+                throw new KeyNotFoundException("No motorcycles found for this user.");
+            }
+
+            return _mapper.Map<List<MotorcycleDtos.ViewMotorcycleDto>>(motorcycles);
         }
     }
 }

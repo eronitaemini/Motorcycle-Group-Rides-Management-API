@@ -88,7 +88,14 @@ namespace Motorcycle_Group_Rides_Management_API.Controllers
             }
 
         }
-		
+
+        [HttpGet("search")]
+        public async Task<ActionResult> GetGroups(string searchQuery = "", string sortBy = "Name", bool ascending = true, int pageNumber = 1, int pageSize = 10)
+        {
+            var groups = await _groupService.GetGroupsAsync(searchQuery, sortBy, ascending, pageNumber, pageSize);
+            return Ok(groups);
+        }
+
 
 
     }

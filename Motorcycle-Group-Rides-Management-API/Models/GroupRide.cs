@@ -6,8 +6,9 @@ namespace Motorcycle_Group_Rides_Management_API.Models
         [Table("GroupRides")]
         public class GroupRide
         {
-                [Key]
-                public Guid Id { get; set; } = Guid.NewGuid();
+                
+                public Guid Id { get; set; }
+    
 
                 [Required]
                 [MaxLength(100)]
@@ -26,6 +27,13 @@ namespace Motorcycle_Group_Rides_Management_API.Models
                 [Required]
                 public string EndPoint { get; set; }
 
+
+       // [ForeignKey(nameof(User))]
+        //public Guid UserId { get; set; }
+        //public User User { get; set; }
+
+  
+
                 public ICollection<UserGroupRide> UserGroupRides { get; set; } = new List<UserGroupRide>();
 
         [Required]
@@ -35,4 +43,5 @@ namespace Motorcycle_Group_Rides_Management_API.Models
 
 
         }
+
 }
